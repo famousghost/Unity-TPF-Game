@@ -1,2 +1,2 @@
-# Unity-TPF-Game
-Horror Game making with friends
+# Unity-logic-game
+Gra logiczna na silniku Unity 3d
