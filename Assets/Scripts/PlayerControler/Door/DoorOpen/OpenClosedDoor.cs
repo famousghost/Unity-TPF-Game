@@ -13,6 +13,9 @@ public class OpenClosedDoor : MonoBehaviour {
     [SerializeField]
     private DoorIsOpenedAndClosed currentDoorTransform;
 
+    [SerializeField]
+    private ButtonClicked currentButtonState;
+
     [Header("Texture2d Variables")]
     [SerializeField]
     private Texture2D openDoorImage;
@@ -49,11 +52,12 @@ public class OpenClosedDoor : MonoBehaviour {
         {
             if (Input.GetKeyDown(leftMouseKeyDown))
             {
-                if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Doors"))
+                if(hit.collider.gameObject.layer == LayerMask.NameToLayer("Buttons"))
                 {
-                    currentDoorTransform = hit.collider.gameObject.GetComponent<DoorIsOpenedAndClosed>();
+                    currentButtonState = hit.collider.gameObject.GetComponent<ButtonClicked>();
+                    currentDoorTransform = hit.collider.gameObject.GetComponentInParent<DoorIsOpenedAndClosed>();
+                    currentButtonState.ButtonClick();
                     currentDoorTransform.SetDoorIsOpened();
-                    Debug.Log("udalo sie drzwi");
                 }
             }
         }
@@ -68,7 +72,7 @@ public class OpenClosedDoor : MonoBehaviour {
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, MAXDISTANCEOFRAY))
         {
-            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Doors"))
+            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Buttons"))
             {
                 GUI.DrawTexture(new Rect(Screen.width / 2 - 10.0f, Screen.height / 2 - 10, 30, 30), openDoorImage);
             }
