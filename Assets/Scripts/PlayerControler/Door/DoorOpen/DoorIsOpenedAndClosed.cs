@@ -67,5 +67,12 @@ public class DoorIsOpenedAndClosed : MonoBehaviour {
     }
     #endregion
 
+    #region Getter
+    public bool GetDoorIsOpened()
+    {
+        return this.doorIsOpened;
+    }
+    #endregion
+
 
 }

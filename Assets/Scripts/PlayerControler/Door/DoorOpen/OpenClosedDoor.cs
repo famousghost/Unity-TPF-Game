@@ -14,6 +14,9 @@ public class OpenClosedDoor : MonoBehaviour {
     private DoorIsOpenedAndClosed currentDoorTransform;
 
     [SerializeField]
+    private DoorOpenColseSound doorOpenCloseSound;
+
+    [SerializeField]
     private ButtonClicked currentButtonState;
 
     [Header("Texture2d Variables")]
@@ -56,7 +59,9 @@ public class OpenClosedDoor : MonoBehaviour {
                 {
                     currentButtonState = hit.collider.gameObject.GetComponent<ButtonClicked>();
                     currentDoorTransform = hit.collider.gameObject.GetComponentInParent<DoorIsOpenedAndClosed>();
+                    doorOpenCloseSound = hit.collider.gameObject.GetComponentInParent<DoorOpenColseSound>();
                     currentButtonState.ButtonClick();
+                    doorOpenCloseSound.PlayClip();
                     currentDoorTransform.SetDoorIsOpened();
                 }
             }
