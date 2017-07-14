@@ -58,6 +58,8 @@ public class PlayerControler : MonoBehaviour
 
     private const float MAXDISTANCEOFRAY = 1.4f;
 
+    private const float MAXDISTANCEOFGROUNDEDRAY = 1.2f;
+
 
     #endregion
 
@@ -73,7 +75,7 @@ public class PlayerControler : MonoBehaviour
     private float sensivity = 90.0f;
 
     [SerializeField]
-    private float jumpGravity = 300.0f;
+    private float jumpGravity = 230.0f;
 
     private float rotationeY;
     #endregion
@@ -96,6 +98,7 @@ public class PlayerControler : MonoBehaviour
         Walking();
         Exhaustion();
         Rotatione();
+        PlayerIsOnGrounded();
         LiftObject();
         DoJump();
         keyInput.Inputs();
@@ -149,9 +152,12 @@ public class PlayerControler : MonoBehaviour
         keyInput.SetOnGrounded(false);
     }
 
-    void OnCollisionStay(Collision collision)
+    private void PlayerIsOnGrounded()
     {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Environment"))
+        Ray rayToGround = new Ray(rigidBody.transform.position, -rigidBody.transform.up);
+        RaycastHit hitCollider;
+        Debug.DrawRay(rigidBody.transform.position, -rigidBody.transform.up, Color.green);
+        if (Physics.Raycast(rayToGround,out hitCollider,MAXDISTANCEOFGROUNDEDRAY))
         {
             keyInput.SetOnGrounded(true);
         }
