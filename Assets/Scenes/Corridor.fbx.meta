@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 06fd311aac6a2ae49ae14bc2e36dec82
-timeCreated: 1500073460
+guid: 1c72881e4aa178e4d8e5295252808cf1
+timeCreated: 1500116409
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
@@ -9,22 +9,28 @@ ModelImporter:
     100002: Cube
     100004: Cube.001
     100006: Cube.002
+    100008: Cube.003
     400000: //RootNode
     400002: Cube
     400004: Cube.001
     400006: Cube.002
+    400008: Cube.003
     2300000: Cube
     2300002: Cube.001
     2300004: Cube.002
+    2300006: Cube.003
     3300000: Cube
     3300002: Cube.001
     3300004: Cube.002
-    4300000: Cube.002
-    4300002: Cube.001
-    4300004: Cube
+    3300006: Cube.003
+    4300000: Cube.003
+    4300002: Cube.002
+    4300004: Cube.001
+    4300006: Cube
     6400000: Cube
     6400002: Cube.001
     6400004: Cube.002
+    6400006: Cube.003
   materials:
     importMaterials: 1
     materialName: 0

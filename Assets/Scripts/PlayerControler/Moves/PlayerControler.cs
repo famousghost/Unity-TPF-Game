@@ -32,6 +32,9 @@ public class PlayerControler : MonoBehaviour
     [SerializeField]
     private bool canLift = true;
 
+    [SerializeField]
+    private bool canJump = true;
+
     #endregion
 
     #region KeyClass
@@ -93,12 +96,11 @@ public class PlayerControler : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         Walking();
         Exhaustion();
         Rotatione();
-        PlayerIsOnGrounded();
         LiftObject();
         DoJump();
         keyInput.Inputs();
@@ -140,16 +142,27 @@ public class PlayerControler : MonoBehaviour
     #endregion
 
     #region Jumping
-
     private void DoJump()
     {
         Vector3 jumper;
-        if (keyInput.GetIsJupming() == true && keyInput.GetOnGrounded() == true)
+        PlayerIsOnGrounded();
+        var playerCanJump = keyInput.GetIsJupming() && keyInput.GetOnGrounded() && canJump;
+        if (playerCanJump)
         {
+            keyInput.SetOnGrounded(false);
             jumper = Vector3.up * jumpGravity * Time.deltaTime;
             rigidBody.AddForce(jumper, ForceMode.Impulse);
         }
-        keyInput.SetOnGrounded(false);
+    }
+
+    void OnCollisionExit(Collision collision)
+    {
+        canJump = false;
+    }
+
+    void OnCollisionStay(Collision collision)
+    {
+        canJump = true;
     }
 
     private void PlayerIsOnGrounded()
