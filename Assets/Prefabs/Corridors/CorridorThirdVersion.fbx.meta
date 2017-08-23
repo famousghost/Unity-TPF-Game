@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: f5504c4c787f4724686f3b79fd7f0166
-timeCreated: 1502979146
+guid: 28d814a77a97c7d46bf8d0ee9151edaa
+timeCreated: 1503527526
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
@@ -11,28 +11,34 @@ ModelImporter:
     100006: Cube.001
     100008: Cube.002
     100010: Cube.003
+    100012: Cube.004
     400000: Camera
     400002: //RootNode
     400004: Cube
     400006: Cube.001
     400008: Cube.002
     400010: Cube.003
+    400012: Cube.004
     2300000: Cube
     2300002: Cube.001
     2300004: Cube.002
     2300006: Cube.003
+    2300008: Cube.004
     3300000: Cube
     3300002: Cube.001
     3300004: Cube.002
     3300006: Cube.003
-    4300000: Cube.003
-    4300002: Cube.002
-    4300004: Cube.001
-    4300006: Cube
+    3300008: Cube.004
+    4300000: Cube.004
+    4300002: Cube.003
+    4300004: Cube.002
+    4300006: Cube.001
+    4300008: Cube
     6400000: Cube
     6400002: Cube.001
     6400004: Cube.002
     6400006: Cube.003
+    6400008: Cube.004
   materials:
     importMaterials: 1
     materialName: 0
@@ -78,7 +84,7 @@ ModelImporter:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
-  importAnimation: 0
+  importAnimation: 1
   copyAvatar: 0
   humanDescription:
     serializedVersion: 2
