@@ -226,53 +226,45 @@ public class PlayerControler : MonoBehaviour
         {
             //rysowanie promienia z kamery
             Debug.DrawRay(cam.transform.position, forward * 20, Color.red);
-
             if (keyInput.GetIsLifted() == true)
             {
-
+                
                 if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Lifted") && canLift == true)
                 {
-                    Debug.Log("Mozna podniesc");
-                    gameObj.transform.parent = cam.transform;
+                    gameObj = hit.rigidbody;
+                    gameObj.transform.position = cam.transform.position + cam.transform.forward;
+                    gameObj.transform.rotation = cam.transform.rotation;
+                    Physics.IgnoreCollision(gameObj.transform.GetComponent<Collider>(), rigidBody.transform.GetComponent<Collider>(),true);
 
-                    //gameObj.isKinematic = true;
+
                     gameObj.useGravity = false;
                     //Freezowanie rotacji i pozycji tylko y i z
-                    gameObj.constraints = RigidbodyConstraints.FreezeRotation 
-                        | RigidbodyConstraints.FreezePositionZ 
-                        | RigidbodyConstraints.FreezePositionY;
-                    gameObj = hit.rigidbody;
+                    gameObj.constraints = RigidbodyConstraints.FreezeAll;
                 }
                 else
                 {
-                    gameObj.transform.parent = null;
+                    Physics.IgnoreCollision(gameObj.transform.GetComponent<Collider>(), rigidBody.transform.GetComponent<Collider>(), false);
                     gameObj = GameObject.FindGameObjectWithTag("help").GetComponent<Rigidbody>();
                 }
                 if (Input.GetKeyDown(KeyCode.Mouse1))
                 {
                     keyInput.SetLiftetd(false);
-
-                    gameObj.transform.parent = null;
-
-                    //gameObj.isKinematic = false;
                     gameObj.useGravity = true;
                     gameObj.constraints = RigidbodyConstraints.None;
 
                     canLift = false;
 
                     gameObj.AddForce(cam.transform.forward * 5, ForceMode.Impulse);
-
+                    Physics.IgnoreCollision(gameObj.transform.GetComponent<Collider>(), rigidBody.transform.GetComponent<Collider>(), false);
                     gameObj = GameObject.FindGameObjectWithTag("help").GetComponent<Rigidbody>();
-
                 }
             }
             else
             {
                 keyInput.SetLiftetd(false);
-                gameObj.transform.parent = null;
-                //gameObj.isKinematic = false;
                 gameObj.useGravity = true;
                 gameObj.constraints = RigidbodyConstraints.None;
+                Physics.IgnoreCollision(gameObj.transform.GetComponent<Collider>(), rigidBody.transform.GetComponent<Collider>(), false);
                 gameObj = GameObject.FindGameObjectWithTag("help").GetComponent<Rigidbody>();
             }
 
@@ -282,8 +274,6 @@ public class PlayerControler : MonoBehaviour
         {
             keyInput.SetLiftetd(false);
             canLift = true;
-            gameObj.transform.parent = null;
-            //gameObj.isKinematic = false;
             gameObj.useGravity = true;
             gameObj.constraints = RigidbodyConstraints.None;
             gameObj = GameObject.FindGameObjectWithTag("help").GetComponent<Rigidbody>();
