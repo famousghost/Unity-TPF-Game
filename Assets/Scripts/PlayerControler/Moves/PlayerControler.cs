@@ -1,9 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+#region PlayerState Enumerator
+public enum PlayerStates
+{
+    PlayerIdle = 0,
+    PlayerWalk,
+    PlayerRun,
+    PlayerCrouch
+}
+#endregion
+
 public class PlayerControler : MonoBehaviour
 {
-
+    #region PlayerState
+    [Header("Player States Enum")]
+    [SerializeField]
+    PlayerStates playerStates;
+    #endregion
     //Player RigidBody use to gravity and walking
     #region Player
     [Header("Player")]
@@ -24,9 +38,6 @@ public class PlayerControler : MonoBehaviour
     #region Bool Variables
 
     [SerializeField]
-    private bool running = false;
-
-    [SerializeField]
     private bool canRun = true;
 
     [SerializeField]
@@ -34,6 +45,9 @@ public class PlayerControler : MonoBehaviour
 
     [SerializeField]
     private bool canJump = true;
+
+    [SerializeField]
+    private bool playerCanStand = true;
 
     #endregion
 
@@ -52,6 +66,8 @@ public class PlayerControler : MonoBehaviour
     private const float MAXIMUMROTATIONEY = 80.0f;
 
     private const float WALKSPEED = 3.0f;
+
+    private const float CROUCHSPEED = 1.0f;
 
     private const float RUNSPEED = 5.0f;
 
@@ -83,7 +99,7 @@ public class PlayerControler : MonoBehaviour
     private float rotationeY;
     #endregion
 
-    #region System Functions
+    #region System Methods
     // Use this for initialization
     void Start()
     {
@@ -98,6 +114,9 @@ public class PlayerControler : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        ChangePlayerStates();
+        CheckPlayerState();
+        CheckIfPlayerIsUnderTheColider();
         Walking();
         Exhaustion();
         Rotatione();
@@ -107,25 +126,99 @@ public class PlayerControler : MonoBehaviour
     }
     #endregion
 
-    #region WalkMethod
+    #region WalkMethods
     private void Walking()
     {
         Vector3 walkingX, walkingY;
         Vector3 Walks;
-        if (keyInput.GetIsRunning() == true && canRun == true)
-        {
-            walkSpeed = RUNSPEED;
-            running = true;
-        }
-        else
-        {
-            walkSpeed = WALKSPEED;
-            running = false;
-        }
         walkingX = Vector3.right * walkSpeed * keyInput.GetWalkX() * Time.deltaTime;
         walkingY = Vector3.forward * walkSpeed * keyInput.GetWalkY() * Time.deltaTime;
         Walks = walkingX + walkingY;
         rigidBody.transform.Translate(Walks);
+    }
+    #endregion
+
+    #region CheckPlayerStates
+    private void CheckPlayerState()
+    {
+        switch(playerStates)
+        {
+            case PlayerStates.PlayerIdle:
+                StandUpAnimation();
+                break;
+            case PlayerStates.PlayerWalk:
+                StandUpAnimation();
+                walkSpeed = WALKSPEED;
+                break;
+            case PlayerStates.PlayerRun:
+                StandUpAnimation();
+                walkSpeed = RUNSPEED;
+                break;
+            case PlayerStates.PlayerCrouch:
+                 CrouchAnimation();
+                 walkSpeed = CROUCHSPEED;
+                break;
+            default:
+                walkSpeed = 0.0f;
+                break;
+        }
+    }
+    #endregion
+
+    #region Crouch And StandUp Animation
+    private void CrouchAnimation()
+    {
+        if (rigidBody.transform.localScale.y >= 0.5f)
+        {
+            rigidBody.transform.localScale = Vector3.Lerp(new Vector3(rigidBody.transform.localScale.x, rigidBody.transform.localScale.y, rigidBody.transform.localScale.z), new Vector3(rigidBody.transform.localScale.x, rigidBody.transform.localScale.y / 2.0f, rigidBody.transform.localScale.z), Time.deltaTime * 2.0f);
+        }
+    }
+
+    private void StandUpAnimation()
+    {
+        if(rigidBody.transform.localScale.y <= 1.0f && playerCanStand)
+        rigidBody.transform.localScale = Vector3.Lerp(new Vector3(rigidBody.transform.localScale.x, rigidBody.transform.localScale.y, rigidBody.transform.localScale.z), new Vector3(rigidBody.transform.localScale.x, rigidBody.transform.localScale.y * 2.0f, rigidBody.transform.localScale.z), Time.deltaTime * 2.0f);
+    }
+    #endregion
+
+    private void CheckIfPlayerIsUnderTheColider()
+    {
+        Ray ray = new Ray(rigidBody.transform.position, rigidBody.transform.up);
+        RaycastHit hit;
+        if(Physics.Raycast(ray,out hit,2.0f))
+        {
+            playerStates = PlayerStates.PlayerCrouch;
+            Debug.DrawRay(rigidBody.transform.position, rigidBody.transform.up, Color.blue);
+            playerCanStand = false;
+        }
+        else
+        {
+            playerCanStand = true;
+        }
+    }
+    #region ChangePlayerStates
+    private void ChangePlayerStates()
+    {
+        var playerCrouch = (rigidBody.transform.localScale.y >= 0.5f);
+        var playerIsWalking = (keyInput.GetWalkX() != 0 || keyInput.GetWalkY() != 0) && playerStates != PlayerStates.PlayerCrouch;
+        var playerCanRun = (keyInput.GetIsRunning() && canRun == true) && playerStates != PlayerStates.PlayerCrouch;
+        var playerCanCrouch = (keyInput.GetIsCrouching()) && playerStates != PlayerStates.PlayerRun;
+        if (playerCanRun)
+        {
+            playerStates = PlayerStates.PlayerRun;
+        }
+        else if (playerCanCrouch)
+        {
+            playerStates = PlayerStates.PlayerCrouch;
+        }
+        else if (playerIsWalking)
+        {
+            playerStates = PlayerStates.PlayerWalk;
+        }
+        else
+        {
+            playerStates = PlayerStates.PlayerIdle;
+        }
     }
     #endregion
 
@@ -146,7 +239,7 @@ public class PlayerControler : MonoBehaviour
     {
         Vector3 jumper;
         PlayerIsOnGrounded();
-        var playerCanJump = keyInput.GetIsJupming() && keyInput.GetOnGrounded() && canJump;
+        var playerCanJump = keyInput.GetIsJupming() && keyInput.GetOnGrounded() && canJump && playerStates != PlayerStates.PlayerCrouch;
         if (playerCanJump)
         {
             keyInput.SetOnGrounded(false);
@@ -182,7 +275,7 @@ public class PlayerControler : MonoBehaviour
 
     private void Exhaustion()
     {
-        if (running == true && stamina >= MINSTAMINA && keyInput.GetWalkY() > 0)
+        if (playerStates == PlayerStates.PlayerRun && stamina >= MINSTAMINA)
         {
             stamina -= 0.5f;
             if (stamina <= MINSTAMINA)
@@ -193,7 +286,6 @@ public class PlayerControler : MonoBehaviour
         }
         else if (stamina <= MAXSTAMINA)
         {
-            running = false;
             stamina += 0.5f;
             if (stamina >= MAXSTAMINA)
             {
