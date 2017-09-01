@@ -1,9 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+#region PlayerState Enumerator
+public enum PlayerStates
+{
+    PlayerIdle = 0,
+    PlayerWalk,
+    PlayerRun,
+    PlayerCrouch
+}
+#endregion
+
 public class PlayerControler : MonoBehaviour
 {
-
+    #region PlayerState
+    [Header("Player States Enum")]
+    [SerializeField]
+    PlayerStates playerStates;
+    #endregion
     //Player RigidBody use to gravity and walking
     #region Player
     [Header("Player")]
@@ -22,9 +36,6 @@ public class PlayerControler : MonoBehaviour
     #endregion
 
     #region Bool Variables
-
-    [SerializeField]
-    private bool running = false;
 
     [SerializeField]
     private bool canRun = true;
@@ -83,7 +94,7 @@ public class PlayerControler : MonoBehaviour
     private float rotationeY;
     #endregion
 
-    #region System Functions
+    #region System Methods
     // Use this for initialization
     void Start()
     {
@@ -98,6 +109,7 @@ public class PlayerControler : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        ChangePlayerStates();
         Walking();
         Exhaustion();
         Rotatione();
@@ -107,25 +119,59 @@ public class PlayerControler : MonoBehaviour
     }
     #endregion
 
-    #region WalkMethod
+    #region WalkMethods
     private void Walking()
     {
         Vector3 walkingX, walkingY;
         Vector3 Walks;
-        if (keyInput.GetIsRunning() == true && canRun == true)
-        {
-            walkSpeed = RUNSPEED;
-            running = true;
-        }
-        else
-        {
-            walkSpeed = WALKSPEED;
-            running = false;
-        }
+        CheckPlayerState();
         walkingX = Vector3.right * walkSpeed * keyInput.GetWalkX() * Time.deltaTime;
         walkingY = Vector3.forward * walkSpeed * keyInput.GetWalkY() * Time.deltaTime;
         Walks = walkingX + walkingY;
         rigidBody.transform.Translate(Walks);
+    }
+    #endregion
+
+    #region CheckPlayerStates
+    private void CheckPlayerState()
+    {
+        switch(playerStates)
+        {
+            case PlayerStates.PlayerWalk:
+                walkSpeed = WALKSPEED;
+                break;
+            case PlayerStates.PlayerRun:
+                walkSpeed = RUNSPEED;
+                break;
+            case PlayerStates.PlayerCrouch:
+                break;
+            case PlayerStates.PlayerIdle:
+                walkSpeed = 0.0f;
+                break;
+            default:
+                walkSpeed = 0.0f;
+                break;
+        }
+    }
+    #endregion
+
+    #region ChangePlayerStates
+    private void ChangePlayerStates()
+    {
+        var playerIsWalking = (keyInput.GetWalkX() != 0 || keyInput.GetWalkY() != 0);
+        var playerCanRun = (keyInput.GetIsRunning() == true && canRun == true) && playerIsWalking;
+        if (playerCanRun)
+        {
+            playerStates = PlayerStates.PlayerRun;
+        }
+        else if(playerIsWalking)
+        {
+            playerStates = PlayerStates.PlayerWalk;
+        }
+        else
+        {
+            playerStates = PlayerStates.PlayerIdle;
+        }
     }
     #endregion
 
@@ -182,7 +228,7 @@ public class PlayerControler : MonoBehaviour
 
     private void Exhaustion()
     {
-        if (running == true && stamina >= MINSTAMINA && keyInput.GetWalkY() > 0)
+        if (playerStates == PlayerStates.PlayerRun && stamina >= MINSTAMINA && keyInput.GetWalkY() > 0)
         {
             stamina -= 0.5f;
             if (stamina <= MINSTAMINA)
@@ -193,7 +239,7 @@ public class PlayerControler : MonoBehaviour
         }
         else if (stamina <= MAXSTAMINA)
         {
-            running = false;
+            playerStates = PlayerStates.PlayerWalk;
             stamina += 0.5f;
             if (stamina >= MAXSTAMINA)
             {
