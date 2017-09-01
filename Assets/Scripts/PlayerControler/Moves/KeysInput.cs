@@ -28,6 +28,9 @@ public class KeysInput : MonoBehaviour {
     [SerializeField]
     private KeyCode lifting = KeyCode.Mouse0;
 
+    [SerializeField]
+    private KeyCode crouch = KeyCode.LeftControl;
+
     [Header("Input Bool")]
     [SerializeField]
     private bool isRunning = false;
@@ -41,18 +44,9 @@ public class KeysInput : MonoBehaviour {
     [SerializeField]
     private bool isLiftetd = false;
 
-    #endregion
+    [SerializeField]
+    private bool playerIsCrouch = false;
 
-    #region Unity Methods
-    // Use this for initialization
-    void Start () {
-	    
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	    
-	}
     #endregion
 
     #region InputsMethod
@@ -65,6 +59,8 @@ public class KeysInput : MonoBehaviour {
         isJumping = Input.GetKeyDown(jump);
         isRunning = Input.GetKey(run);
         isLiftetd = Input.GetKey(lifting);
+        playerIsCrouch = Input.GetKey(crouch);
+
     }
     #endregion
 
@@ -107,6 +103,11 @@ public class KeysInput : MonoBehaviour {
     public bool GetIsLifted()
     {
         return isLiftetd;
+    }
+
+    public bool GetIsCrouching()
+    {
+        return playerIsCrouch;
     }
     #endregion
 

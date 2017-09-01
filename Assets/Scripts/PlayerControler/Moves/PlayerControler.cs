@@ -46,6 +46,9 @@ public class PlayerControler : MonoBehaviour
     [SerializeField]
     private bool canJump = true;
 
+    [SerializeField]
+    private bool playerCanStand = true;
+
     #endregion
 
     #region KeyClass
@@ -63,6 +66,8 @@ public class PlayerControler : MonoBehaviour
     private const float MAXIMUMROTATIONEY = 80.0f;
 
     private const float WALKSPEED = 3.0f;
+
+    private const float CROUCHSPEED = 1.0f;
 
     private const float RUNSPEED = 5.0f;
 
@@ -110,6 +115,8 @@ public class PlayerControler : MonoBehaviour
     void FixedUpdate()
     {
         ChangePlayerStates();
+        CheckPlayerState();
+        CheckIfPlayerIsUnderTheColider();
         Walking();
         Exhaustion();
         Rotatione();
@@ -124,7 +131,6 @@ public class PlayerControler : MonoBehaviour
     {
         Vector3 walkingX, walkingY;
         Vector3 Walks;
-        CheckPlayerState();
         walkingX = Vector3.right * walkSpeed * keyInput.GetWalkX() * Time.deltaTime;
         walkingY = Vector3.forward * walkSpeed * keyInput.GetWalkY() * Time.deltaTime;
         Walks = walkingX + walkingY;
@@ -137,16 +143,20 @@ public class PlayerControler : MonoBehaviour
     {
         switch(playerStates)
         {
+            case PlayerStates.PlayerIdle:
+                StandUpAnimation();
+                break;
             case PlayerStates.PlayerWalk:
+                StandUpAnimation();
                 walkSpeed = WALKSPEED;
                 break;
             case PlayerStates.PlayerRun:
+                StandUpAnimation();
                 walkSpeed = RUNSPEED;
                 break;
             case PlayerStates.PlayerCrouch:
-                break;
-            case PlayerStates.PlayerIdle:
-                walkSpeed = 0.0f;
+                 CrouchAnimation();
+                 walkSpeed = CROUCHSPEED;
                 break;
             default:
                 walkSpeed = 0.0f;
@@ -155,16 +165,53 @@ public class PlayerControler : MonoBehaviour
     }
     #endregion
 
+    #region Crouch And StandUp Animation
+    private void CrouchAnimation()
+    {
+        if (rigidBody.transform.localScale.y >= 0.5f)
+        {
+            rigidBody.transform.localScale = Vector3.Lerp(new Vector3(rigidBody.transform.localScale.x, rigidBody.transform.localScale.y, rigidBody.transform.localScale.z), new Vector3(rigidBody.transform.localScale.x, rigidBody.transform.localScale.y / 2.0f, rigidBody.transform.localScale.z), Time.deltaTime * 2.0f);
+        }
+    }
+
+    private void StandUpAnimation()
+    {
+        if(rigidBody.transform.localScale.y <= 1.0f && playerCanStand)
+        rigidBody.transform.localScale = Vector3.Lerp(new Vector3(rigidBody.transform.localScale.x, rigidBody.transform.localScale.y, rigidBody.transform.localScale.z), new Vector3(rigidBody.transform.localScale.x, rigidBody.transform.localScale.y * 2.0f, rigidBody.transform.localScale.z), Time.deltaTime * 2.0f);
+    }
+    #endregion
+
+    private void CheckIfPlayerIsUnderTheColider()
+    {
+        Ray ray = new Ray(rigidBody.transform.position, rigidBody.transform.up);
+        RaycastHit hit;
+        if(Physics.Raycast(ray,out hit,2.0f))
+        {
+            playerStates = PlayerStates.PlayerCrouch;
+            Debug.DrawRay(rigidBody.transform.position, rigidBody.transform.up, Color.blue);
+            playerCanStand = false;
+        }
+        else
+        {
+            playerCanStand = true;
+        }
+    }
     #region ChangePlayerStates
     private void ChangePlayerStates()
     {
-        var playerIsWalking = (keyInput.GetWalkX() != 0 || keyInput.GetWalkY() != 0);
-        var playerCanRun = (keyInput.GetIsRunning() == true && canRun == true) && playerIsWalking;
+        var playerCrouch = (rigidBody.transform.localScale.y >= 0.5f);
+        var playerIsWalking = (keyInput.GetWalkX() != 0 || keyInput.GetWalkY() != 0) && playerStates != PlayerStates.PlayerCrouch;
+        var playerCanRun = (keyInput.GetIsRunning() && canRun == true) && playerStates != PlayerStates.PlayerCrouch;
+        var playerCanCrouch = (keyInput.GetIsCrouching()) && playerStates != PlayerStates.PlayerRun;
         if (playerCanRun)
         {
             playerStates = PlayerStates.PlayerRun;
         }
-        else if(playerIsWalking)
+        else if (playerCanCrouch)
+        {
+            playerStates = PlayerStates.PlayerCrouch;
+        }
+        else if (playerIsWalking)
         {
             playerStates = PlayerStates.PlayerWalk;
         }
@@ -192,7 +239,7 @@ public class PlayerControler : MonoBehaviour
     {
         Vector3 jumper;
         PlayerIsOnGrounded();
-        var playerCanJump = keyInput.GetIsJupming() && keyInput.GetOnGrounded() && canJump;
+        var playerCanJump = keyInput.GetIsJupming() && keyInput.GetOnGrounded() && canJump && playerStates != PlayerStates.PlayerCrouch;
         if (playerCanJump)
         {
             keyInput.SetOnGrounded(false);
@@ -228,7 +275,7 @@ public class PlayerControler : MonoBehaviour
 
     private void Exhaustion()
     {
-        if (playerStates == PlayerStates.PlayerRun && stamina >= MINSTAMINA && keyInput.GetWalkY() > 0)
+        if (playerStates == PlayerStates.PlayerRun && stamina >= MINSTAMINA)
         {
             stamina -= 0.5f;
             if (stamina <= MINSTAMINA)
@@ -239,7 +286,6 @@ public class PlayerControler : MonoBehaviour
         }
         else if (stamina <= MAXSTAMINA)
         {
-            playerStates = PlayerStates.PlayerWalk;
             stamina += 0.5f;
             if (stamina >= MAXSTAMINA)
             {
