@@ -53,15 +53,13 @@ public class DoubleDoorOpen : MonoBehaviour {
     private void DoorOpen()
     {
         thisDoor.transform.FindChild("CorridorDoors1").position = Vector3.MoveTowards(thisDoor.transform.FindChild("CorridorDoors1").position, doorOpened1.position, openingSpeed * Time.deltaTime);
-        if(thisDoor.transform.FindChild("CorridorDoors2").position!=null)
-            thisDoor.transform.FindChild("CorridorDoors2").position = Vector3.MoveTowards(thisDoor.transform.FindChild("CorridorDoors2").position, doorOpened2.position, openingSpeed * Time.deltaTime);
+        thisDoor.transform.FindChild("CorridorDoors2").position = Vector3.MoveTowards(thisDoor.transform.FindChild("CorridorDoors2").position, doorOpened2.position, openingSpeed * Time.deltaTime);
     }
 
     private void DoorClose()
     {
         thisDoor.transform.FindChild("CorridorDoors1").position = Vector3.MoveTowards(thisDoor.transform.FindChild("CorridorDoors1").position, doorClosed1.position, openingSpeed * Time.deltaTime);
-        if (thisDoor.transform.FindChild("CorridorDoors2").position != null)
-            thisDoor.transform.FindChild("CorridorDoors2").position = Vector3.MoveTowards(thisDoor.transform.FindChild("CorridorDoors2").position, doorClosed2.position, openingSpeed * Time.deltaTime);
+        thisDoor.transform.FindChild("CorridorDoors2").position = Vector3.MoveTowards(thisDoor.transform.FindChild("CorridorDoors2").position, doorClosed2.position, openingSpeed * Time.deltaTime);
     }
 
     private void ChangeDoorState()

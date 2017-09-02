@@ -5,9 +5,6 @@ using UnityEngine.SceneManagement;
 
 public class ButtonsAction : MonoBehaviour
 {
-
-    [SerializeField]
-    private bool chnagePosition = false;
     [SerializeField]
     private bool isHover = false;
 

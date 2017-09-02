@@ -35,6 +35,12 @@ public class PlayerControler : MonoBehaviour
 
     #endregion
 
+    #region Vector3
+    [Header("Vector3")]
+    [SerializeField]
+    private Vector3 mainCamPosition;
+    #endregion
+
     #region Bool Variables
 
     [SerializeField]
@@ -104,11 +110,12 @@ public class PlayerControler : MonoBehaviour
     void Start()
     {
         stamina = MAXSTAMINA;
-        rigidBody = GetComponent<Rigidbody>();
+       rigidBody = GetComponent<Rigidbody>();
         keyInput = GetComponent<KeysInput>();
         cam = GetComponentInChildren<Camera>();
         gameObj = GameObject.FindGameObjectWithTag("help").GetComponent<Rigidbody>();
         Cursor.lockState = CursorLockMode.Locked;
+        mainCamPosition = cam.transform.localPosition;
     }
 
     // Update is called once per frame
@@ -116,6 +123,7 @@ public class PlayerControler : MonoBehaviour
     {
         ChangePlayerStates();
         CheckPlayerState();
+        LookSides();
         CheckIfPlayerIsUnderTheColider();
         Walking();
         Exhaustion();
@@ -181,6 +189,7 @@ public class PlayerControler : MonoBehaviour
     }
     #endregion
 
+    #region Check If Player Is unders something
     private void CheckIfPlayerIsUnderTheColider()
     {
         Ray ray = new Ray(rigidBody.transform.position, rigidBody.transform.up);
@@ -188,7 +197,7 @@ public class PlayerControler : MonoBehaviour
         if(Physics.Raycast(ray,out hit,2.0f))
         {
             playerStates = PlayerStates.PlayerCrouch;
-            Debug.DrawRay(rigidBody.transform.position, rigidBody.transform.up, Color.blue);
+            Debug.DrawRay(rigidBody.transform.position, rigidBody.transform.up, Color.blue,100.0f);
             playerCanStand = false;
         }
         else
@@ -196,10 +205,42 @@ public class PlayerControler : MonoBehaviour
             playerCanStand = true;
         }
     }
+    #endregion
+
+    #region LookSides
+    private void LookSides()
+    {
+        var leftLook = keyInput.GetLeftSide() && (cam.transform.localPosition.x >= -0.5f);
+        var backFromLeft = !keyInput.GetLeftSide() && (cam.transform.localPosition.x < 0.0f);
+        var rightLook = keyInput.GetRightSide() && (cam.transform.localPosition.x <= 0.5f);
+        var backFromRight = !keyInput.GetRightSide() && (cam.transform.localPosition.x > 0.0f);
+
+        //Left Side
+        if (leftLook)
+        {
+            cam.transform.localPosition = Vector3.Lerp(cam.transform.localPosition, new Vector3(cam.transform.localPosition.x - 0.5f, cam.transform.localPosition.y, cam.transform.localPosition.z), Time.deltaTime * 2.0f);
+            //cam.transform.localRotation = Quaternion.FromToRotation(cam.transform.localRotation, new Vector3(cam.transform.localRotation.x, cam.transform.localRotation.y, cam.transform.localRotation.z + 4.0f));
+        }
+        else if(backFromLeft)
+        {
+            cam.transform.localPosition = Vector3.Lerp(cam.transform.localPosition, new Vector3(mainCamPosition.x, cam.transform.localPosition.y, cam.transform.localPosition.z), Time.deltaTime * 3.0f);
+        }
+        //Right Side
+        if (rightLook)
+        {
+            cam.transform.localPosition = Vector3.Lerp(cam.transform.localPosition, new Vector3(cam.transform.localPosition.x + 0.5f, cam.transform.localPosition.y, cam.transform.localPosition.z), Time.deltaTime * 2.0f);
+            //cam.transform.localRotation = Quaternion.FromToRotation(cam.transform.localRotation, new Vector3(cam.transform.localRotation.x, cam.transform.localRotation.y, cam.transform.localRotation.z + 4.0f));
+        }
+        else if (backFromRight)
+        {
+            cam.transform.localPosition = Vector3.Lerp(cam.transform.localPosition, new Vector3(mainCamPosition.x, cam.transform.localPosition.y, cam.transform.localPosition.z), Time.deltaTime * 3.0f);
+        }
+    }
+    #endregion
+
     #region ChangePlayerStates
     private void ChangePlayerStates()
     {
-        var playerCrouch = (rigidBody.transform.localScale.y >= 0.5f);
         var playerIsWalking = (keyInput.GetWalkX() != 0 || keyInput.GetWalkY() != 0) && playerStates != PlayerStates.PlayerCrouch;
         var playerCanRun = (keyInput.GetIsRunning() && canRun == true) && playerStates != PlayerStates.PlayerCrouch;
         var playerCanCrouch = (keyInput.GetIsCrouching()) && playerStates != PlayerStates.PlayerRun;
