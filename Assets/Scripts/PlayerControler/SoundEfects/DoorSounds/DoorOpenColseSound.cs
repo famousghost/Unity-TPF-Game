@@ -19,12 +19,12 @@ public class DoorOpenColseSound : MonoBehaviour
 
 
     // Use this for initialization
-    void Start()
+    void Awake()
     {
         doorOpenedAndClosed = GetComponent<DoorIsOpenedAndClosed>();
         sourceOfDoorSounds = GetComponent<AudioSource>();
-        doorOpenSound = Resources.Load("DoorSounds/openDoor.wav",typeof(AudioClip)) as AudioClip;
-        doorCloseSound = Resources.Load("DoorSounds/openDoor.wav", typeof(AudioClip)) as AudioClip;
+        doorOpenSound = Resources.Load("GameSounds/DoorSounds/openDoor",typeof(AudioClip)) as AudioClip;
+        doorCloseSound = Resources.Load("GameSounds/DoorSounds/openDoor", typeof(AudioClip)) as AudioClip;
     }
 
     // Update is called once per frame

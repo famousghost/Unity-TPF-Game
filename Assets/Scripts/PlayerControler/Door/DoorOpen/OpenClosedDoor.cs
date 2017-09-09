@@ -73,7 +73,6 @@ public class OpenClosedDoor : MonoBehaviour {
     void OnGUI()
     {
         Ray ray = new Ray(playerView.transform.position, playerView.transform.forward);
-        Debug.DrawRay(playerView.transform.position, playerView.transform.forward * 30, Color.blue);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, MAXDISTANCEOFRAY))
         {
