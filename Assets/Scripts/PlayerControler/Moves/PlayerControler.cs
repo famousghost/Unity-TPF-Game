@@ -35,6 +35,21 @@ public class PlayerControler : MonoBehaviour
 
     #endregion
 
+    #region Audio
+    [Header("Audio")]
+    [SerializeField]
+    private MovmentSound movementSound;
+
+    [SerializeField]
+    private AudioSource playerSource;
+    #endregion
+
+    #region Vector3
+    [Header("Vector3")]
+    [SerializeField]
+    private Vector3 mainCamPosition;
+    #endregion
+
     #region Bool Variables
 
     [SerializeField]
@@ -97,6 +112,9 @@ public class PlayerControler : MonoBehaviour
     private float jumpGravity = 230.0f;
 
     private float rotationeY;
+
+    [SerializeField]
+    private float rotateX;
     #endregion
 
     #region System Methods
@@ -107,8 +125,11 @@ public class PlayerControler : MonoBehaviour
         rigidBody = GetComponent<Rigidbody>();
         keyInput = GetComponent<KeysInput>();
         cam = GetComponentInChildren<Camera>();
-        gameObj = GameObject.FindGameObjectWithTag("help").GetComponent<Rigidbody>();
+        //gameObj = GameObject.FindGameObjectWithTag("help").GetComponent<Rigidbody>();
         Cursor.lockState = CursorLockMode.Locked;
+        mainCamPosition = cam.transform.localPosition;
+        playerSource = GameObject.FindGameObjectWithTag("AudioSource").GetComponent<AudioSource>();
+        movementSound = GetComponent<MovmentSound>();
     }
 
     // Update is called once per frame
@@ -116,6 +137,7 @@ public class PlayerControler : MonoBehaviour
     {
         ChangePlayerStates();
         CheckPlayerState();
+        LookSides();
         CheckIfPlayerIsUnderTheColider();
         Walking();
         Exhaustion();
@@ -129,12 +151,33 @@ public class PlayerControler : MonoBehaviour
     #region WalkMethods
     private void Walking()
     {
-        Vector3 walkingX, walkingY;
-        Vector3 Walks;
-        walkingX = Vector3.right * walkSpeed * keyInput.GetWalkX() * Time.deltaTime;
-        walkingY = Vector3.forward * walkSpeed * keyInput.GetWalkY() * Time.deltaTime;
-        Walks = walkingX + walkingY;
-        rigidBody.transform.Translate(Walks);
+         Vector3 walkingX, walkingY;
+         Vector3 Walks;
+         walkingX = Vector3.right * walkSpeed * keyInput.GetWalkX() * Time.deltaTime;
+         walkingY = Vector3.forward * walkSpeed * keyInput.GetWalkY() * Time.deltaTime;
+         Walks = walkingX + walkingY;
+         rigidBody.transform.Translate(Walks);
+    }
+    #endregion
+
+    #region RotationeMethod
+    private void Rotatione()
+    {
+        Vector3 rotationeX;
+        if (keyInput.GetRightSide() || keyInput.GetLeftSide())
+        {
+            rotateX += keyInput.GetMouseX() * sensivity  * Time.deltaTime;
+            rotateX = Mathf.Clamp(rotateX, MINIMALROTATIONEY, MAXIMUMROTATIONEY);
+        }
+        else
+        {
+            rotateX = 0.0f;
+            rotationeX = Vector3.up * sensivity * keyInput.GetMouseX() * Time.deltaTime;
+            rigidBody.transform.rotation *= Quaternion.Euler(rotationeX);
+        }
+        rotationeY -= keyInput.GetMouseY() * sensivity * Time.deltaTime;
+        rotationeY = Mathf.Clamp(rotationeY, MINIMALROTATIONEY, MAXIMUMROTATIONEY);
+        cam.transform.localRotation = Quaternion.Euler(rotationeY, rotateX, 0);
     }
     #endregion
 
@@ -145,18 +188,28 @@ public class PlayerControler : MonoBehaviour
         {
             case PlayerStates.PlayerIdle:
                 StandUpAnimation();
+                movementSound.StopSound();
                 break;
             case PlayerStates.PlayerWalk:
                 StandUpAnimation();
+                if (keyInput.GetOnGrounded())
+                    movementSound.PlayWalkSound();
+                else
+                    movementSound.StopSound();
                 walkSpeed = WALKSPEED;
                 break;
             case PlayerStates.PlayerRun:
                 StandUpAnimation();
+                if (keyInput.GetOnGrounded())
+                    movementSound.PlayRunSound();
+                else
+                    movementSound.StopSound();
                 walkSpeed = RUNSPEED;
                 break;
             case PlayerStates.PlayerCrouch:
-                 CrouchAnimation();
-                 walkSpeed = CROUCHSPEED;
+                CrouchAnimation();
+                movementSound.StopSound();
+                walkSpeed = CROUCHSPEED;
                 break;
             default:
                 walkSpeed = 0.0f;
@@ -168,38 +221,70 @@ public class PlayerControler : MonoBehaviour
     #region Crouch And StandUp Animation
     private void CrouchAnimation()
     {
+        Vector3 stand = new Vector3(rigidBody.transform.localScale.x, rigidBody.transform.localScale.y, rigidBody.transform.localScale.z);
+        Vector3 crouch = new Vector3(rigidBody.transform.localScale.x, rigidBody.transform.localScale.y / 2.0f, rigidBody.transform.localScale.z);
         if (rigidBody.transform.localScale.y >= 0.5f)
-        {
-            rigidBody.transform.localScale = Vector3.Lerp(new Vector3(rigidBody.transform.localScale.x, rigidBody.transform.localScale.y, rigidBody.transform.localScale.z), new Vector3(rigidBody.transform.localScale.x, rigidBody.transform.localScale.y / 2.0f, rigidBody.transform.localScale.z), Time.deltaTime * 2.0f);
-        }
+            rigidBody.transform.localScale = Vector3.Lerp(stand, crouch, Time.deltaTime * 2.0f);
     }
 
     private void StandUpAnimation()
     {
-        if(rigidBody.transform.localScale.y <= 1.0f && playerCanStand)
-        rigidBody.transform.localScale = Vector3.Lerp(new Vector3(rigidBody.transform.localScale.x, rigidBody.transform.localScale.y, rigidBody.transform.localScale.z), new Vector3(rigidBody.transform.localScale.x, rigidBody.transform.localScale.y * 2.0f, rigidBody.transform.localScale.z), Time.deltaTime * 2.0f);
+        Vector3 crouch = new Vector3(rigidBody.transform.localScale.x, rigidBody.transform.localScale.y, rigidBody.transform.localScale.z);
+        Vector3 stand = new Vector3(rigidBody.transform.localScale.x, rigidBody.transform.localScale.y * 2.0f, rigidBody.transform.localScale.z);
+        if (rigidBody.transform.localScale.y <= 1.0f && playerCanStand)
+            rigidBody.transform.localScale = Vector3.Lerp(crouch,stand, Time.deltaTime * 2.0f);
     }
     #endregion
 
+    #region Check If Player Is unders something
     private void CheckIfPlayerIsUnderTheColider()
     {
         Ray ray = new Ray(rigidBody.transform.position, rigidBody.transform.up);
         RaycastHit hit;
         if(Physics.Raycast(ray,out hit,2.0f))
         {
-            playerStates = PlayerStates.PlayerCrouch;
-            Debug.DrawRay(rigidBody.transform.position, rigidBody.transform.up, Color.blue);
-            playerCanStand = false;
+           playerStates = PlayerStates.PlayerCrouch;
+           playerCanStand = false;
         }
         else
         {
             playerCanStand = true;
         }
     }
+    #endregion
+
+    #region LookSides
+    private void LookSides()
+    {
+        var leftLook = keyInput.GetLeftSide() && (cam.transform.localPosition.x >= -0.5f);
+        var backFromLeft = !keyInput.GetLeftSide() && (cam.transform.localPosition.x < 0.0f);
+        var rightLook = keyInput.GetRightSide() && (cam.transform.localPosition.x <= 0.5f);
+        var backFromRight = !keyInput.GetRightSide() && (cam.transform.localPosition.x > 0.0f);
+
+        //Left Side
+        if (leftLook)
+        {
+            cam.transform.localPosition = Vector3.Lerp(cam.transform.localPosition, new Vector3(cam.transform.localPosition.x - 0.5f, cam.transform.localPosition.y, cam.transform.localPosition.z), Time.deltaTime * 2.0f);
+        }
+        else if(backFromLeft)
+        {
+            cam.transform.localPosition = Vector3.Lerp(cam.transform.localPosition, new Vector3(mainCamPosition.x, cam.transform.localPosition.y, cam.transform.localPosition.z), Time.deltaTime * 3.0f);
+        }
+        //Right Side
+        if (rightLook)
+        {
+            cam.transform.localPosition = Vector3.Lerp(cam.transform.localPosition, new Vector3(cam.transform.localPosition.x + 0.5f, cam.transform.localPosition.y, cam.transform.localPosition.z), Time.deltaTime * 2.0f);
+        }
+        else if (backFromRight)
+        {
+            cam.transform.localPosition = Vector3.Lerp(cam.transform.localPosition, new Vector3(mainCamPosition.x, cam.transform.localPosition.y, cam.transform.localPosition.z), Time.deltaTime * 3.0f);
+        }
+    }
+    #endregion
+
     #region ChangePlayerStates
     private void ChangePlayerStates()
     {
-        var playerCrouch = (rigidBody.transform.localScale.y >= 0.5f);
         var playerIsWalking = (keyInput.GetWalkX() != 0 || keyInput.GetWalkY() != 0) && playerStates != PlayerStates.PlayerCrouch;
         var playerCanRun = (keyInput.GetIsRunning() && canRun == true) && playerStates != PlayerStates.PlayerCrouch;
         var playerCanCrouch = (keyInput.GetIsCrouching()) && playerStates != PlayerStates.PlayerRun;
@@ -222,18 +307,6 @@ public class PlayerControler : MonoBehaviour
     }
     #endregion
 
-    #region RotationeMethod
-    private void Rotatione()
-    {
-        Vector3 rotationeX;
-        rotationeX = Vector3.up * sensivity * keyInput.GetMouseX() * Time.deltaTime;
-        rigidBody.transform.rotation *= Quaternion.Euler(rotationeX);
-        rotationeY -= keyInput.GetMouseY() * sensivity * Time.deltaTime;
-        rotationeY = Mathf.Clamp(rotationeY, MINIMALROTATIONEY, MAXIMUMROTATIONEY);
-        cam.transform.localRotation = Quaternion.Euler(rotationeY,0, 0);
-    }
-    #endregion
-
     #region Jumping
     private void DoJump()
     {
@@ -243,6 +316,7 @@ public class PlayerControler : MonoBehaviour
         if (playerCanJump)
         {
             keyInput.SetOnGrounded(false);
+            playerSource.PlayOneShot(movementSound.GetJumpSound());
             jumper = Vector3.up * jumpGravity * Time.deltaTime;
             rigidBody.AddForce(jumper, ForceMode.Impulse);
         }
@@ -260,12 +334,15 @@ public class PlayerControler : MonoBehaviour
 
     private void PlayerIsOnGrounded()
     {
-        Ray rayToGround = new Ray(rigidBody.transform.position, -rigidBody.transform.up);
-        RaycastHit hitCollider;
-        Debug.DrawRay(rigidBody.transform.position, -rigidBody.transform.up, Color.green);
-        if (Physics.Raycast(rayToGround,out hitCollider,MAXDISTANCEOFGROUNDEDRAY))
+        if (!keyInput.GetOnGrounded())
         {
-            keyInput.SetOnGrounded(true);
+            Ray rayToGround = new Ray(rigidBody.transform.position, -rigidBody.transform.up);
+            RaycastHit hitCollider;
+            Debug.DrawRay(rigidBody.transform.position, -rigidBody.transform.up, Color.green);
+            if (Physics.Raycast(rayToGround, out hitCollider, MAXDISTANCEOFGROUNDEDRAY))
+            {
+                keyInput.SetOnGrounded(true);
+            }
         }
     }
 
@@ -310,14 +387,9 @@ public class PlayerControler : MonoBehaviour
         //promien puszczony wprost z kamery na przod
         Ray ray = new Ray(cam.transform.position, forward);
 
-        //rysowanie promienia z kamery
-        Debug.DrawRay(cam.transform.position, forward * 20, Color.green);
-
 
         if (Physics.Raycast(ray, out hit, MAXDISTANCEOFRAY))
         {
-            //rysowanie promienia z kamery
-            Debug.DrawRay(cam.transform.position, forward * 20, Color.red);
             if (keyInput.GetIsLifted() == true)
             {
                 
@@ -335,40 +407,55 @@ public class PlayerControler : MonoBehaviour
                 }
                 else
                 {
-                    Physics.IgnoreCollision(gameObj.transform.GetComponent<Collider>(), rigidBody.transform.GetComponent<Collider>(), false);
-                    gameObj = GameObject.FindGameObjectWithTag("help").GetComponent<Rigidbody>();
+                    if (gameObj != null)
+                    {
+                        Physics.IgnoreCollision(gameObj.transform.GetComponent<Collider>(), rigidBody.transform.GetComponent<Collider>(), false);
+                        gameObj = null;
+                    }
                 }
                 if (Input.GetKeyDown(KeyCode.Mouse1))
                 {
-                    keyInput.SetLiftetd(false);
-                    gameObj.useGravity = true;
-                    gameObj.constraints = RigidbodyConstraints.None;
+                    if (gameObj != null)
+                    {
+                        keyInput.SetLiftetd(false);
+                        gameObj.useGravity = true;
+                        gameObj.constraints = RigidbodyConstraints.None;
 
-                    canLift = false;
+                        canLift = false;
 
-                    gameObj.AddForce(cam.transform.forward * 5, ForceMode.Impulse);
-                    Physics.IgnoreCollision(gameObj.transform.GetComponent<Collider>(), rigidBody.transform.GetComponent<Collider>(), false);
-                    gameObj = GameObject.FindGameObjectWithTag("help").GetComponent<Rigidbody>();
+                        gameObj.AddForce(cam.transform.forward * 5, ForceMode.Impulse);
+                        Physics.IgnoreCollision(gameObj.transform.GetComponent<Collider>(), rigidBody.transform.GetComponent<Collider>(), false);
+                        gameObj = null;
+                    }
                 }
             }
             else
             {
-                keyInput.SetLiftetd(false);
-                gameObj.useGravity = true;
-                gameObj.constraints = RigidbodyConstraints.None;
-                Physics.IgnoreCollision(gameObj.transform.GetComponent<Collider>(), rigidBody.transform.GetComponent<Collider>(), false);
-                gameObj = GameObject.FindGameObjectWithTag("help").GetComponent<Rigidbody>();
+                if (gameObj != null)
+                {
+                    keyInput.SetLiftetd(false);
+                    gameObj.useGravity = true;
+                    gameObj.constraints = RigidbodyConstraints.None;
+                    Physics.IgnoreCollision(gameObj.transform.GetComponent<Collider>(), rigidBody.transform.GetComponent<Collider>(), false);
+                    gameObj = null;
+                }
             }
 
         }
 
         else
         {
-            keyInput.SetLiftetd(false);
-            canLift = true;
-            gameObj.useGravity = true;
-            gameObj.constraints = RigidbodyConstraints.None;
-            gameObj = GameObject.FindGameObjectWithTag("help").GetComponent<Rigidbody>();
+            if (gameObj != null)
+            {
+                keyInput.SetLiftetd(false);
+                gameObj.useGravity = true;
+                gameObj.constraints = RigidbodyConstraints.None;
+                gameObj = null;
+            }
+            else
+            {
+                canLift = true;
+            }
         }
        
     }

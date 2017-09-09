@@ -97,7 +97,6 @@ public class ItemsPickUp : MonoBehaviour {
             if(hit.collider.gameObject.layer == LayerMask.NameToLayer("Item"))
             {
                 GameObject pickedUpItem = hit.collider.gameObject;
-                Debug.DrawRay(playerViewPosition, playerViewforward * 20, Color.red);
                 if (Input.GetKeyDown(KeyCode.Mouse0))
                 {
                     if (pickedUpItem != null)

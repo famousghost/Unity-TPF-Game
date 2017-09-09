@@ -31,6 +31,12 @@ public class KeysInput : MonoBehaviour {
     [SerializeField]
     private KeyCode crouch = KeyCode.LeftControl;
 
+    [SerializeField]
+    private KeyCode lookLeft = KeyCode.Q;
+
+    [SerializeField]
+    private KeyCode lookRight = KeyCode.E;
+
     [Header("Input Bool")]
     [SerializeField]
     private bool isRunning = false;
@@ -47,6 +53,12 @@ public class KeysInput : MonoBehaviour {
     [SerializeField]
     private bool playerIsCrouch = false;
 
+    [SerializeField]
+    private bool leftLook = false;
+
+    [SerializeField]
+    private bool rightLook = false;
+
     #endregion
 
     #region InputsMethod
@@ -59,6 +71,14 @@ public class KeysInput : MonoBehaviour {
         isJumping = Input.GetKeyDown(jump);
         isRunning = Input.GetKey(run);
         isLiftetd = Input.GetKey(lifting);
+        if (!rightLook)
+        {
+            leftLook = Input.GetKey(lookLeft);
+        }
+        if (!leftLook)
+        {
+            rightLook = Input.GetKey(lookRight);
+        }
         playerIsCrouch = Input.GetKey(crouch);
 
     }
@@ -108,6 +128,16 @@ public class KeysInput : MonoBehaviour {
     public bool GetIsCrouching()
     {
         return playerIsCrouch;
+    }
+
+    public bool GetLeftSide()
+    {
+        return leftLook;
+    }
+
+    public bool GetRightSide()
+    {
+        return rightLook;
     }
     #endregion
 
