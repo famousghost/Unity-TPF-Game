@@ -115,6 +115,9 @@ public class PlayerControler : MonoBehaviour
 
     [SerializeField]
     private float rotateX;
+
+    [SerializeField]
+    private float rotateZ;
     #endregion
 
     #region System Methods
@@ -171,13 +174,13 @@ public class PlayerControler : MonoBehaviour
         }
         else
         {
-            rotateX = 0.0f;
+            rotateX = Mathf.Lerp(rotateX, 0.0f, Time.deltaTime * 8.0f);
             rotationeX = Vector3.up * sensivity * keyInput.GetMouseX() * Time.deltaTime;
             rigidBody.transform.rotation *= Quaternion.Euler(rotationeX);
         }
         rotationeY -= keyInput.GetMouseY() * sensivity * Time.deltaTime;
         rotationeY = Mathf.Clamp(rotationeY, MINIMALROTATIONEY, MAXIMUMROTATIONEY);
-        cam.transform.localRotation = Quaternion.Euler(rotationeY, rotateX, 0);
+        cam.transform.localRotation = Quaternion.Euler(rotationeY, rotateX, rotateZ);
     }
     #endregion
 
@@ -256,6 +259,7 @@ public class PlayerControler : MonoBehaviour
     #region LookSides
     private void LookSides()
     {
+
         var leftLook = keyInput.GetLeftSide() && (cam.transform.localPosition.x >= -0.5f);
         var backFromLeft = !keyInput.GetLeftSide() && (cam.transform.localPosition.x < 0.0f);
         var rightLook = keyInput.GetRightSide() && (cam.transform.localPosition.x <= 0.5f);
@@ -265,19 +269,23 @@ public class PlayerControler : MonoBehaviour
         if (leftLook)
         {
             cam.transform.localPosition = Vector3.Lerp(cam.transform.localPosition, new Vector3(cam.transform.localPosition.x - 0.5f, cam.transform.localPosition.y, cam.transform.localPosition.z), Time.deltaTime * 2.0f);
+            rotateZ = Mathf.Lerp(rotateZ, 12.0f, Time.deltaTime * 5.0f);
         }
         else if(backFromLeft)
         {
             cam.transform.localPosition = Vector3.Lerp(cam.transform.localPosition, new Vector3(mainCamPosition.x, cam.transform.localPosition.y, cam.transform.localPosition.z), Time.deltaTime * 3.0f);
+            rotateZ = Mathf.Lerp(rotateZ, 0.0f, Time.deltaTime * 5.0f);
         }
         //Right Side
         if (rightLook)
         {
             cam.transform.localPosition = Vector3.Lerp(cam.transform.localPosition, new Vector3(cam.transform.localPosition.x + 0.5f, cam.transform.localPosition.y, cam.transform.localPosition.z), Time.deltaTime * 2.0f);
+            rotateZ = Mathf.Lerp(rotateZ, -12.0f, Time.deltaTime * 5.0f);
         }
         else if (backFromRight)
         {
             cam.transform.localPosition = Vector3.Lerp(cam.transform.localPosition, new Vector3(mainCamPosition.x, cam.transform.localPosition.y, cam.transform.localPosition.z), Time.deltaTime * 3.0f);
+            rotateZ = Mathf.Lerp(rotateZ, 0.0f, Time.deltaTime * 5.0f);
         }
     }
     #endregion
