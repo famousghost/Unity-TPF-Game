@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Networking;
 using UnityEngine;
 
 public class MovmentSound : MonoBehaviour {
@@ -29,7 +30,7 @@ public class MovmentSound : MonoBehaviour {
     // Use this for initialization
     void Awake () {
         waitingForFootstep = TIMETOFOOTSTEP;
-        audioSource = GameObject.Find("Player").GetComponent<AudioSource>();
+        audioSource = GetComponent<AudioSource>();
         walkingSound = Resources.Load("GameSounds/Movement/SpaceShipWalk", typeof(AudioClip)) as AudioClip;
         jumpSound = Resources.Load("GameSounds/Movement/Jump", typeof(AudioClip)) as AudioClip;
     }

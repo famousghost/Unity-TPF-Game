@@ -9,8 +9,6 @@ public class ButtonsAction : MonoBehaviour
     [SerializeField]
     private bool isHover = false;
 
-    private int textWritingIterator = 0;
-
     [SerializeField]
     private Image backgroundImage;
 

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Networking;
 
 #region PlayerState Enumerator
 public enum PlayerStates
@@ -18,6 +19,9 @@ public class PlayerControler : MonoBehaviour
     [SerializeField]
     PlayerStates playerStates;
     #endregion
+
+    [SerializeField]
+    private GunPickUp gunPickUp;
     //Player RigidBody use to gravity and walking
     #region Player
     [Header("Player")]
@@ -28,7 +32,7 @@ public class PlayerControler : MonoBehaviour
     private Camera cam;
     #endregion
     //Keys input walking,runing, jumping, use
-    #region GameObjects
+    #region LiftObject
 
     [SerializeField]
     private Rigidbody gameObj;
@@ -63,6 +67,9 @@ public class PlayerControler : MonoBehaviour
 
     [SerializeField]
     private bool playerCanStand = true;
+
+    [SerializeField]
+    private bool liftItem = false;
 
     #endregion
 
@@ -124,30 +131,29 @@ public class PlayerControler : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        stamina = MAXSTAMINA;
-        rigidBody = GetComponent<Rigidbody>();
-        keyInput = GetComponent<KeysInput>();
-        cam = GetComponentInChildren<Camera>();
-        //gameObj = GameObject.FindGameObjectWithTag("help").GetComponent<Rigidbody>();
-        Cursor.lockState = CursorLockMode.Locked;
-        mainCamPosition = cam.transform.localPosition;
-        playerSource = GameObject.FindGameObjectWithTag("AudioSource").GetComponent<AudioSource>();
-        movementSound = GetComponent<MovmentSound>();
+            stamina = MAXSTAMINA;
+            rigidBody = GetComponent<Rigidbody>();
+            keyInput = GetComponent<KeysInput>();
+            cam = GetComponentInChildren<Camera>();
+            Cursor.lockState = CursorLockMode.Locked;
+            mainCamPosition = cam.transform.localPosition;
+            playerSource = GameObject.FindGameObjectWithTag("AudioSource").GetComponent<AudioSource>();
+            movementSound = GetComponent<MovmentSound>();
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        ChangePlayerStates();
-        CheckPlayerState();
-        LookSides();
-        CheckIfPlayerIsUnderTheColider();
-        Walking();
-        Exhaustion();
-        Rotatione();
-        LiftObject();
-        DoJump();
-        keyInput.Inputs();
+            ChangePlayerStates();
+            CheckPlayerState();
+            LookSides();
+            CheckIfPlayerIsUnderTheColider();
+            Walking();
+            Exhaustion();
+            Rotatione();
+            LiftObject();
+            DoJump();
+            keyInput.Inputs();
     }
     #endregion
 
@@ -290,6 +296,22 @@ public class PlayerControler : MonoBehaviour
     }
     #endregion
 
+    #region GunsTrigger
+    void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.layer == LayerMask.NameToLayer("MachineGun"))
+        {
+            gunPickUp = other.GetComponent<GunPickUp>();
+            gunPickUp.PickUpWeapon();
+        }
+        if (other.gameObject.layer == LayerMask.NameToLayer("Bazooka"))
+        {
+            gunPickUp = other.GetComponent<GunPickUp>();
+            gunPickUp.PickUpWeapon();
+        }
+    }
+    #endregion
+
     #region ChangePlayerStates
     private void ChangePlayerStates()
     {
@@ -396,30 +418,27 @@ public class PlayerControler : MonoBehaviour
         Ray ray = new Ray(cam.transform.position, forward);
 
 
+        if (liftItem && gameObj != null)
+        {
+            gameObj.transform.position = cam.transform.position + cam.transform.forward;
+            gameObj.transform.rotation = cam.transform.rotation;
+            Physics.IgnoreCollision(gameObj.transform.GetComponent<Collider>(), rigidBody.transform.GetComponent<Collider>(), true);
+
+
+            gameObj.useGravity = false;
+            //Freezowanie rotacji i pozycji tylko y i z
+            gameObj.constraints = RigidbodyConstraints.FreezeAll;
+        }
+
         if (Physics.Raycast(ray, out hit, MAXDISTANCEOFRAY))
         {
-            if (keyInput.GetIsLifted() == true)
+            if (keyInput.GetIsLifted())
             {
-                
-                if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Lifted") && canLift == true)
+
+                if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Lifted") && canLift == true && !liftItem)
                 {
                     gameObj = hit.rigidbody;
-                    gameObj.transform.position = cam.transform.position + cam.transform.forward;
-                    gameObj.transform.rotation = cam.transform.rotation;
-                    Physics.IgnoreCollision(gameObj.transform.GetComponent<Collider>(), rigidBody.transform.GetComponent<Collider>(),true);
-
-
-                    gameObj.useGravity = false;
-                    //Freezowanie rotacji i pozycji tylko y i z
-                    gameObj.constraints = RigidbodyConstraints.FreezeAll;
-                }
-                else
-                {
-                    if (gameObj != null)
-                    {
-                        Physics.IgnoreCollision(gameObj.transform.GetComponent<Collider>(), rigidBody.transform.GetComponent<Collider>(), false);
-                        gameObj = null;
-                    }
+                    liftItem = true;
                 }
                 if (Input.GetKeyDown(KeyCode.Mouse1))
                 {
@@ -434,38 +453,25 @@ public class PlayerControler : MonoBehaviour
                         gameObj.AddForce(cam.transform.forward * 5, ForceMode.Impulse);
                         Physics.IgnoreCollision(gameObj.transform.GetComponent<Collider>(), rigidBody.transform.GetComponent<Collider>(), false);
                         gameObj = null;
+                        liftItem = false;
                     }
                 }
             }
-            else
+            else if(liftItem != false && !keyInput.GetIsLifted())
             {
-                if (gameObj != null)
-                {
-                    keyInput.SetLiftetd(false);
-                    gameObj.useGravity = true;
-                    gameObj.constraints = RigidbodyConstraints.None;
-                    Physics.IgnoreCollision(gameObj.transform.GetComponent<Collider>(), rigidBody.transform.GetComponent<Collider>(), false);
-                    gameObj = null;
-                }
+                gameObj.useGravity = true;
+                gameObj.constraints = RigidbodyConstraints.None;
+                Physics.IgnoreCollision(gameObj.transform.GetComponent<Collider>(), rigidBody.transform.GetComponent<Collider>(), false);
+                keyInput.SetLiftetd(false);
+                gameObj = null;
+                liftItem = false;
             }
-
         }
 
         else
         {
-            if (gameObj != null)
-            {
-                keyInput.SetLiftetd(false);
-                gameObj.useGravity = true;
-                gameObj.constraints = RigidbodyConstraints.None;
-                gameObj = null;
-            }
-            else
-            {
-                canLift = true;
-            }
+            canLift = true;
         }
-       
     }
     #endregion
 }
