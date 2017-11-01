@@ -25,7 +25,7 @@ public class FutureDoorOpen : MonoBehaviour {
     // Use this for initialization
     void Start () {
         mainCamera = GetComponent<Camera>();
-        openDoorImage = (Texture2D)UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Resources/UseImages/DoorOpen.png", typeof(Texture2D));
+        //openDoorImage = (Texture2D)UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Resources/UseImages/DoorOpen.png", typeof(Texture2D));
     }
 	
 	// Update is called once per frame
