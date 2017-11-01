@@ -1,2 +1,2 @@
 # Unity-logic-game
-Gra logiczna na silniku Unity 3d
+Gra typu horror tworzona na silniku graficznym Unity3d
