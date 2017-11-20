@@ -470,7 +470,9 @@ public class PlayerControler : MonoBehaviour
 
         else
         {
+            keyInput.SetLiftetd(false);
             canLift = true;
+            liftItem = false;
         }
     }
     #endregion

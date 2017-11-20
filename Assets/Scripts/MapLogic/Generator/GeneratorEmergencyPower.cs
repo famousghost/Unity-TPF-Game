@@ -8,6 +8,9 @@ public class GeneratorEmergencyPower : MonoBehaviour {
     private Rigidbody generator;
 
     [SerializeField]
+    private SwitchActive switchAcitve;
+
+    [SerializeField]
     private EmergencyLights emergencyLights;
 
     [SerializeField]
@@ -16,6 +19,7 @@ public class GeneratorEmergencyPower : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         generator = this.GetComponent<Rigidbody>();
+        switchAcitve = GameObject.FindGameObjectWithTag("GeneratorPlace").GetComponent<SwitchActive>();
         playerControler = GameObject.Find("Player").GetComponent<PlayerControler>();
         emergencyLights = GameObject.FindGameObjectWithTag("GeneratorPlace").GetComponent<EmergencyLights>();
     }
@@ -25,6 +29,7 @@ public class GeneratorEmergencyPower : MonoBehaviour {
         if (other.tag == "GeneratorPlace")
         {
             playerControler.SetGameObj(null);
+            switchAcitve.PlayPowerOnSound();
             Destroy(generator);
             emergencyLights.SetLightState(LightsState.Emergency);
         }
