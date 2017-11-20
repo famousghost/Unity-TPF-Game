@@ -457,7 +457,7 @@ public class PlayerControler : MonoBehaviour
                     }
                 }
             }
-            else if(liftItem != false && !keyInput.GetIsLifted())
+            else if(liftItem != false && !keyInput.GetIsLifted() && gameObj != null)
             {
                 gameObj.useGravity = true;
                 gameObj.constraints = RigidbodyConstraints.None;
@@ -474,4 +474,9 @@ public class PlayerControler : MonoBehaviour
         }
     }
     #endregion
+
+    public void SetGameObj(Rigidbody gameObj)
+    {
+        this.gameObj = gameObj;
+    }
 }
