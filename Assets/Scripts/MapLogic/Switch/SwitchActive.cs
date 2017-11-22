@@ -8,16 +8,12 @@ public class SwitchActive : MonoBehaviour {
     private AudioSource audioSoruce;
 
     [SerializeField]
-    private EmergencyLights emergencyLight;
-
-    [SerializeField]
     private AudioClip switchClip;
 
 	// Use this for initialization
 	void Start () {
-        switchClip = Resources.Load("Switch", typeof(AudioClip)) as AudioClip;
+        switchClip = Resources.Load("Switches/Switch", typeof(AudioClip)) as AudioClip;
         audioSoruce = GetComponent<AudioSource>();
-        emergencyLight = GameObject.FindGameObjectWithTag("GeneratorPlace").GetComponent<EmergencyLights>();
         audioSoruce.clip = switchClip;
 	}
 

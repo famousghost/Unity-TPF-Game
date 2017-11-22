@@ -9,6 +9,9 @@ public class DoorIsOpenedAndClosed : MonoBehaviour {
     private GameObject thisDoor;
 
     [SerializeField]
+    private EmergencyLights emergencyLights;
+
+    [SerializeField]
     private Transform doorOpened1;
 
     [SerializeField]
@@ -31,6 +34,7 @@ public class DoorIsOpenedAndClosed : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
+        emergencyLights = GameObject.FindGameObjectWithTag("GeneratorPlace").GetComponent<EmergencyLights>();
         doorIsOpened = false;
         thisDoor = this.gameObject;
         doorOpened1 = thisDoor.transform.FindChild("Position/opened1").GetComponent<Transform>();
@@ -42,7 +46,8 @@ public class DoorIsOpenedAndClosed : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        ChangeDoorState();
+        if(emergencyLights.GetLightState() != LightsState.Off)
+            ChangeDoorState();
     }
     #endregion
 
