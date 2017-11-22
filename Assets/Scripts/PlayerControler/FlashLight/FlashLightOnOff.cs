@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FlashLightOnOff : MonoBehaviour {
+public class FlashLightOnOff : FlashLightSound {
 
     [SerializeField]
     private Light flashLight;
-
-    [SerializeField]
-    private KeysInput keysInput;
 
     [SerializeField]
     private float batteryPowerLevel = 100.0f;
@@ -20,8 +17,11 @@ public class FlashLightOnOff : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+
+        flashLightSource = GetComponent<AudioSource>();
+        flashLightOn = Resources.Load("FlashLight/flashlighton", typeof(AudioClip)) as AudioClip;
+        flashLightOff = Resources.Load("FlashLight/flashlightoff", typeof(AudioClip)) as AudioClip;
         flashLight = GetComponent<Light>();
-        keysInput = GetComponentInParent<KeysInput>();
 	}
 	
 	// Update is called once per frame
@@ -32,10 +32,24 @@ public class FlashLightOnOff : MonoBehaviour {
     private void OnOffMethod()
     {
         CheckBatterLow();
-        if (batteryPowerLevel > 0.0f)
-            flashLight.enabled = keysInput.GetFlashLightState();
-        else
-            flashLight.enabled = false;
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            if (batteryPowerLevel > 0.0f)
+            {
+                if (flashLight.enabled)
+                {
+                    PlayFlashLightOff();
+                    flashLight.enabled = false;
+                }
+                else
+                {
+                    PlayFlashLightOn();
+                    flashLight.enabled = true;
+                }
+            }
+            else
+                flashLight.enabled = false;
+        }
     }
 
     private void CheckBatterLow()

@@ -32,9 +32,6 @@ public class KeysInput : MonoBehaviour {
     private KeyCode crouch = KeyCode.LeftControl;
 
     [SerializeField]
-    private KeyCode flashLightOnOff = KeyCode.F;
-
-    [SerializeField]
     private KeyCode lookLeft = KeyCode.Q;
 
     [SerializeField]
@@ -52,9 +49,6 @@ public class KeysInput : MonoBehaviour {
 
     [SerializeField]
     private bool isLiftetd = false;
-
-    [SerializeField]
-    private bool flashLightOn = false;
 
     [SerializeField]
     private bool playerIsCrouch = false;
@@ -77,10 +71,6 @@ public class KeysInput : MonoBehaviour {
         isJumping = Input.GetKeyDown(jump);
         isRunning = Input.GetKey(run);
         isLiftetd = Input.GetKey(lifting);
-        if(Input.GetKeyDown(flashLightOnOff))
-        {
-            flashLightOn = !flashLightOn;
-        }
         if (!rightLook)
         {
             leftLook = Input.GetKey(lookLeft);
@@ -98,11 +88,6 @@ public class KeysInput : MonoBehaviour {
     public float GetWalkX()
     {
         return walkX;
-    }
-
-    public bool GetFlashLightState()
-    {
-        return flashLightOn;
     }
 
     public float GetWalkY()
