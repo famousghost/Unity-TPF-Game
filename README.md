@@ -15,6 +15,10 @@ Gra będzie rozgrywała się w kosmosie gdzie głowny bohater zostaje wybudzony 
 
 Gra posiada wszystkie mechaniki znane nam z horrorów wychalanie się zza osłon, kucanie, skakanie jak również podnoszenie przedmiotów i rzucanie nimi. Inwentarz zaimplementowany jest w postaci szarych kwadratów (wkrótce się to zmieni i gra będzie posiadała inwentarz bardziej innowacyjny). Loading screen plus asynchroniczne wczytywanie gry. przedmioty fabularne mają inny rodzaj łapki na ekranie niż przedmioty, które są możliwe do poruszania za pomocą fizyki rigidbody. 
 
+Dodane:
+-Wchodzenie po drabinie.
+-Używanie Przedmiotów z ekwipunku
+
 #Link do strony na facebooku
 
 https://www.facebook.com/MC-Games-836660579833533/

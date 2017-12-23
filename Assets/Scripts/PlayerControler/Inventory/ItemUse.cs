@@ -4,13 +4,16 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
-using System;
 
 public class ItemUse : MonoBehaviour, IPointerDownHandler
 {
     //Item which could be helpfull to use an item
     #region Items
+    [SerializeField]
     private Generator generator;
+
+    [SerializeField]
+    private EmergencyCard emergencyCard;
     #endregion
 
     #region Item Class
@@ -40,6 +43,7 @@ public class ItemUse : MonoBehaviour, IPointerDownHandler
     // Use this for initialization
     void Start () {
         //Generator Logic
+        emergencyCard = GameObject.Find("UsableItems").GetComponent<EmergencyCard>();
         generator = GameObject.Find("UsableItems").GetComponent<Generator>();
         colorOfText.normal.textColor = Color.red;
         colorOfText.fontSize = 20;
@@ -61,6 +65,12 @@ public class ItemUse : MonoBehaviour, IPointerDownHandler
             if (generator.GetUseGenerator() && generator.CheckGeneratorUse(nameOfItem))
             {
                 generator.UseGenerator();
+                item.RemoveItem();
+                itemsPickUp.SubtractCurrentNumberOfItem();
+            }
+            if(emergencyCard.GetUseCard() && emergencyCard.CheckCardUse(nameOfItem))
+            {
+                emergencyCard.UseCard();
                 item.RemoveItem();
                 itemsPickUp.SubtractCurrentNumberOfItem();
             }

@@ -33,7 +33,7 @@ public class ItemDisplay : MonoBehaviour {
     void Start () {
         playerControler = GetComponentInParent<PlayerControler>();
         itemPickUp = GetComponentInParent<ItemsPickUp>();
-        itemCavnas = GetComponent<Canvas>();
+        itemCavnas = GameObject.Find("InventoryCanvas").GetComponent<Canvas>();
 	}
 	
 	// Update is called once per frame

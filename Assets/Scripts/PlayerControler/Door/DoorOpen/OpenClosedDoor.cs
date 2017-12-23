@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.Networking;
 using UnityEngine;
 
 public class OpenClosedDoor : MonoBehaviour {
@@ -40,8 +39,7 @@ public class OpenClosedDoor : MonoBehaviour {
     // Use this for initialization
     void Start () {
         playerView = GetComponentInChildren<Camera>();
-        openDoorImage = (Texture2D)UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Resources/UseImages/ButtonClickHand.png", typeof(Texture2D));
-        emergencyLights = GameObject.FindGameObjectWithTag("GeneratorPlace").GetComponent<EmergencyLights>();
+        emergencyLights = GameObject.FindGameObjectWithTag("LightState").GetComponent<EmergencyLights>();
         leftMouseKeyDown = KeyCode.Mouse0;
     }
 	

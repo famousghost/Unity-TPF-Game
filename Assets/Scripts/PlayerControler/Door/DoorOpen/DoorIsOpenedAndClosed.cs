@@ -34,7 +34,7 @@ public class DoorIsOpenedAndClosed : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-        emergencyLights = GameObject.FindGameObjectWithTag("GeneratorPlace").GetComponent<EmergencyLights>();
+        emergencyLights = GameObject.FindGameObjectWithTag("LightState").GetComponent<EmergencyLights>();
         doorIsOpened = false;
         thisDoor = this.gameObject;
         doorOpened1 = thisDoor.transform.FindChild("Position/opened1").GetComponent<Transform>();

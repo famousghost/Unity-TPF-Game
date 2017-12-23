@@ -23,7 +23,7 @@ public class Generator : MonoBehaviour {
     // Use this for initialization
     void Start () {
         switchAcitve = GameObject.FindGameObjectWithTag("GeneratorPlace").GetComponent<SwitchActive>();
-        emergencyLights = GameObject.FindGameObjectWithTag("GeneratorPlace").GetComponent<EmergencyLights>();
+        emergencyLights = GameObject.FindGameObjectWithTag("LightState").GetComponent<EmergencyLights>();
     }
     #endregion
 

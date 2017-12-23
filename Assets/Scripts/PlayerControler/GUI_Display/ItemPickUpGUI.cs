@@ -23,7 +23,6 @@ public class ItemPickUpGUI : MonoBehaviour {
     // Use this for initialization
     void Start () {
         playerView = GetComponentInChildren<Camera>();
-        pickUpHand = (Texture2D)UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Resources/UseImages/pickUpHand.png", typeof(Texture2D));
     }
     #endregion
 

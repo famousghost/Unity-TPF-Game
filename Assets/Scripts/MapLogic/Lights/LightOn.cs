@@ -18,7 +18,7 @@ public class LightOn : MonoBehaviour {
     // Use this for initialization
     void Start () {
         corridorLight = GetComponent<Light>();
-        emergencyLights = GameObject.FindGameObjectWithTag("GeneratorPlace").GetComponent<EmergencyLights>();
+        emergencyLights = GameObject.FindGameObjectWithTag("LightState").GetComponent<EmergencyLights>();
 	}
 	
 	// Update is called once per frame
@@ -26,6 +26,11 @@ public class LightOn : MonoBehaviour {
         if (emergencyLights.GetLightState() == LightsState.Emergency)
         {
             corridorLight.color = Color.red;
+            corridorLight.enabled = true;
+        }
+        if(emergencyLights.GetLightState() == LightsState.Normal)
+        {
+            corridorLight.color = Color.white;
             corridorLight.enabled = true;
         }
 	}

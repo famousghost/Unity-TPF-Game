@@ -32,7 +32,7 @@ public class DoorOpenColseSound : MonoBehaviour
     void Awake()
     {
         doorOpenedAndClosed = GetComponent<DoorIsOpenedAndClosed>();
-        emergencyLights = GameObject.FindGameObjectWithTag("GeneratorPlace").GetComponent<EmergencyLights>();
+        emergencyLights = GameObject.FindGameObjectWithTag("LightState").GetComponent<EmergencyLights>();
         sourceOfDoorSounds = GetComponent<AudioSource>();
         doorOpenSound = Resources.Load("Switches/ClickOn", typeof(AudioClip)) as AudioClip;
         doorCloseSound = Resources.Load("Switches/ClickOn", typeof(AudioClip)) as AudioClip;
