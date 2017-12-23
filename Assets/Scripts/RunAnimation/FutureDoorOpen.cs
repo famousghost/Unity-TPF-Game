@@ -4,11 +4,15 @@ using UnityEngine;
 
 public class FutureDoorOpen : MonoBehaviour {
 
+    #region Animator
     [SerializeField]
     private Animator doorAnimator;
+    #endregion
 
+    #region Camera
     [SerializeField]
     private Camera mainCamera;
+    #endregion
 
     #region Textures
     [Header("Texture2d Variables")]
@@ -16,12 +20,17 @@ public class FutureDoorOpen : MonoBehaviour {
     private Texture2D openDoorImage;
     #endregion
 
+    #region Bool
     [SerializeField]
     private bool isOpen = false;
+    #endregion
 
+    #region Const
     [SerializeField]
     private const float MAXDISTANCE = 1.4f;
+    #endregion
 
+    #region System Methods
     // Use this for initialization
     void Start () {
         mainCamera = GetComponent<Camera>();
@@ -31,9 +40,10 @@ public class FutureDoorOpen : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         RayToDoor();
-        
     }
+    #endregion
 
+    #region Ray To Door
     private void RayToDoor()
     {
         Ray ray = new Ray(mainCamera.transform.position, mainCamera.transform.forward);
@@ -53,7 +63,9 @@ public class FutureDoorOpen : MonoBehaviour {
              }
         }
     }
+    #endregion
 
+    #region GUI
     void OnGUI()
     {
         Ray ray = new Ray(mainCamera.transform.position, mainCamera.transform.forward);
@@ -67,4 +79,5 @@ public class FutureDoorOpen : MonoBehaviour {
             }
         }
     }
+    #endregion
 }

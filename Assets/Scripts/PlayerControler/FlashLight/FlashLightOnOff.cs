@@ -4,19 +4,26 @@ using UnityEngine;
 
 public class FlashLightOnOff : FlashLightSound {
 
+    #region Light
     [SerializeField]
     private Light flashLight;
+    #endregion
 
+    #region Float
     [SerializeField]
     private float batteryPowerLevel = 100.0f;
 
-    private const float BATTERYLOWTIME = 420.0f;
-
     [SerializeField]
     private float timeToBatteryLow = BATTERYLOWTIME;
+    #endregion
 
-	// Use this for initialization
-	void Start () {
+    #region Const
+    private const float BATTERYLOWTIME = 300.0f;
+    #endregion
+
+    #region System Methods
+    // Use this for initialization
+    void Start () {
 
         flashLightSource = GetComponent<AudioSource>();
         flashLightOn = Resources.Load("FlashLight/flashlighton", typeof(AudioClip)) as AudioClip;
@@ -28,7 +35,9 @@ public class FlashLightOnOff : FlashLightSound {
 	void Update () {
         OnOffMethod();
     }
+    #endregion
 
+    #region OnOffMethod
     private void OnOffMethod()
     {
         CheckBatterLow();
@@ -48,10 +57,15 @@ public class FlashLightOnOff : FlashLightSound {
                 }
             }
             else
+            {
+                PlayFlashLightOff();
                 flashLight.enabled = false;
+            }
         }
     }
+    #endregion
 
+    #region CheckBatteryLow
     private void CheckBatterLow()
     {
         if (flashLight.enabled)
@@ -59,8 +73,19 @@ public class FlashLightOnOff : FlashLightSound {
             if (timeToBatteryLow <= 0.0f)
             {
                 batteryPowerLevel -= 20.0f;
+                timeToBatteryLow = 300.0f;
             }
             timeToBatteryLow -= Time.deltaTime * 1.0f;
         }
+        if(batteryPowerLevel <= 20.0f && timeToBatteryLow <= 10.0f)
+        {
+            flashLight.range = Random.Range(8.5f, 10.0f);
+        }
+        if(batteryPowerLevel <= 0.0f)
+        {
+            PlayFlashLightOff();
+            flashLight.enabled = false;
+        }
     }
+    #endregion
 }

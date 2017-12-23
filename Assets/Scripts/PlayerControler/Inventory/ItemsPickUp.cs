@@ -25,7 +25,7 @@ public class ItemsPickUp : MonoBehaviour {
     [Header("Const Variables")]
     //Max distance of ray how far a player can be from the item
     [SerializeField]
-    private const float MAXDISTANCEOFRAY = 1.4f;
+    private const float MAXDISTANCEOFRAY = 2.3f;
 
     [SerializeField]
     private const int ELEMENTSOFARRAY = 6;
@@ -52,7 +52,7 @@ public class ItemsPickUp : MonoBehaviour {
     //Timer
     #region Timers
     [SerializeField]
-    private float timer = 0.0f;
+    private float timer = 1.5f;
     #endregion
 
     //GUI style which helpfull to set Label color text
@@ -105,7 +105,7 @@ public class ItemsPickUp : MonoBehaviour {
                         imageOfItem = pickedUpItem.GetComponent<ImageOfItem>();
                         AddElementToInventory(imageOfItem.GetItemImage());
                         Debug.Log(CurrentNumberOfItems);
-                       // Destroy(pickedUpItem);
+                        Destroy(pickedUpItem);
                     }
                 }
             }

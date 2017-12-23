@@ -17,10 +17,16 @@ public class Item : MonoBehaviour {
     private Sprite emptyItemSprite;
     #endregion
 
+    #region Item String
+    [SerializeField]
+    private string itemName;
+    #endregion
+
     //Start
     #region Unity System Methods
     // Use this for initialization
     void Start () {
+        itemName = "empty";
         emptyItemSprite = GetComponent<Image>().sprite;
         itemSprite = emptyItemSprite;
     }
@@ -39,6 +45,7 @@ public class Item : MonoBehaviour {
     #region Add Item
     public void AddItem(Sprite itemSprite)
     {
+        this.itemName = itemSprite.name;
         this.itemSprite = itemSprite;
         this.GetComponent<Image>().sprite = this.itemSprite;
     }
@@ -53,6 +60,13 @@ public class Item : MonoBehaviour {
             return false;
         }
         return true;
+    }
+    #endregion
+
+    #region Getter
+    public string GetItemName()
+    {
+        return this.itemName;
     }
     #endregion
 }

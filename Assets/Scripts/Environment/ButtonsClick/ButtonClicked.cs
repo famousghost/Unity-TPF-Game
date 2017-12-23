@@ -4,27 +4,35 @@ using UnityEngine;
 
 public class ButtonClicked : MonoBehaviour {
 
+    #region Game Objects
     [SerializeField]
     private GameObject thisButton;
+    #endregion
 
+    #region Transform
     [SerializeField]
     private Transform buttonClicked;
 
     [SerializeField]
     private Transform currentButtonState;
 
-
     [SerializeField]
     private Transform buttonReleased;
+    #endregion
 
+    #region Bool
     [SerializeField]
     private bool isClicked = false;
+    #endregion
 
+    #region Float
     [SerializeField]
     private float speedOfClicked = 0.2f;
+    #endregion
 
-	// Use this for initialization
-	void Start () {
+    #region System Methods
+    // Use this for initialization
+    void Start () {
         thisButton = this.gameObject;
         buttonClicked = thisButton.transform.FindChild("ButtonClicked");
         buttonReleased = thisButton.transform.FindChild("ButtonReleased");
@@ -36,7 +44,9 @@ public class ButtonClicked : MonoBehaviour {
     {
         ChangeButtonState();
     }
+    #endregion
 
+    #region Change Button State
     private void ChangeButtonState()
     {
         if(isClicked)
@@ -48,9 +58,13 @@ public class ButtonClicked : MonoBehaviour {
             isClicked = false;
         }
     }
+    #endregion
 
+    #region Button Click
     public void ButtonClick()
     {
         isClicked = true;
     }
+    #endregion
+
 }

@@ -4,34 +4,11 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class ButtonsAction : MonoBehaviour
-{
+public class ButtonsAction : MonoBehaviour{
+
+    #region Bool
     [SerializeField]
     private bool isHover = false;
-
-    [SerializeField]
-    private Image backgroundImage;
-
-    [SerializeField]
-    private Image fillImage;
-
-    [SerializeField]
-    private Slider loadingSlider;
-
-    [SerializeField]
-    private AsyncOperation async;
-
-    [SerializeField]
-    private Text loadingDone;
-
-    [SerializeField]
-    private string textToLoadingScreen;
-
-    [SerializeField]
-    private Text loadingText;
-
-    [SerializeField]
-    private Image loadingScreen;
 
     [SerializeField]
     private bool startClicked = false;
@@ -41,15 +18,51 @@ public class ButtonsAction : MonoBehaviour
 
     [SerializeField]
     private bool buttonIsClicked = false;
+    #endregion
 
+    #region Image
+    [SerializeField]
+    private Image backgroundImage;
+
+    [SerializeField]
+    private Image fillImage;
+
+    [SerializeField]
+    private Image loadingScreen;
+    #endregion
+
+    #region Slider
+    [SerializeField]
+    private Slider loadingSlider;
+    #endregion
+
+    #region Async
+    [SerializeField]
+    private AsyncOperation async;
+    #endregion
+
+    #region Text
+    [SerializeField]
+    private Text loadingDone;
+
+    [SerializeField]
+    private Text loadingText;
+    #endregion
+
+    #region String
+    [SerializeField]
+    private string textToLoadingScreen;
+
+    [SerializeField]
+    private string buttonName = "";
+    #endregion
+
+    #region Transform
     [SerializeField]
     private Transform cameraMenuPosition;
 
     [SerializeField]
     private Transform cameraNewGamePostion;
-
-    [SerializeField]
-    private string buttonName = "";
 
     [SerializeField]
     private Transform textHoverTransform;
@@ -59,11 +72,14 @@ public class ButtonsAction : MonoBehaviour
 
     [SerializeField]
     private Transform textCurrentTransform;
+    #endregion
 
-
+    #region Float
     [SerializeField]
     private float step = 2.0f;
+    #endregion
 
+    #region System Methods
     // Use this for initialization
     void Start()
     {
@@ -84,7 +100,9 @@ public class ButtonsAction : MonoBehaviour
         ChangeTextPosition();
         CheckWhichButtonClicked();
     }
+    #endregion
 
+    #region On Mouse Methods
     void OnMouseEnter()
     {
         Debug.Log(this.gameObject.name);
@@ -102,7 +120,9 @@ public class ButtonsAction : MonoBehaviour
         buttonName = this.gameObject.name;
         Debug.Log(buttonName);
     }
+    #endregion
 
+    #region TextPosition
     private void ChangeTextPosition()
     {
         if (isHover == true)
@@ -114,9 +134,9 @@ public class ButtonsAction : MonoBehaviour
             textCurrentTransform.position = Vector3.MoveTowards(textCurrentTransform.position, textNormalTransform.position, step * Time.deltaTime);
         }
     }
+    #endregion
 
-
-
+    #region Check Which Button was Clicked
     private void CheckWhichButtonClicked()
     {
         if (startClicked && !gameStarted)
@@ -141,17 +161,23 @@ public class ButtonsAction : MonoBehaviour
         }
 
     }
+    #endregion
 
+    #region Getters
     public string GetButtonName()
     {
         return this.buttonName;
     }
+    #endregion
 
+    #region Setters
     public void SetButtonName(string buttonName)
     {
         this.buttonName = buttonName;
     }
+    #endregion
 
+    #region Load Game
     public void LoadGame(int lvl)
     {
         StartCoroutine(LoadingScreenScene(lvl));
@@ -180,4 +206,6 @@ public class ButtonsAction : MonoBehaviour
             yield return null;
         }
     }
+    #endregion
+
 }

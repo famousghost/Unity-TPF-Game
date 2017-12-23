@@ -4,15 +4,20 @@ using UnityEngine;
 
 public class FlashLightSound : MonoBehaviour {
 
+    #region Audio Clips
     [SerializeField]
     protected AudioClip flashLightOn;
 
     [SerializeField]
     protected AudioClip flashLightOff;
+    #endregion
 
+    #region Audio Source
     [SerializeField]
     protected AudioSource flashLightSource;
+    #endregion
 
+    #region FlashLight On and Off
     public void PlayFlashLightOn()
     {
         flashLightSource.clip = flashLightOn;
@@ -24,4 +29,5 @@ public class FlashLightSound : MonoBehaviour {
         flashLightSource.clip = flashLightOff;
         flashLightSource.Play();
     }
+    #endregion
 }

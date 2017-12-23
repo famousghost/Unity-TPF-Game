@@ -4,23 +4,30 @@ using UnityEngine;
 
 public class DoorOpenColseSound : MonoBehaviour
 {
-
+    #region Door Open Close Class
     [SerializeField]
     private DoorIsOpenedAndClosed doorOpenedAndClosed;
+    #endregion
 
+    #region Audio source
     [SerializeField]
     private AudioSource sourceOfDoorSounds;
+    #endregion
 
+    #region EmergencyLights Class
     [SerializeField]
     private EmergencyLights emergencyLights;
+    #endregion
 
+    #region AudioClip
     [SerializeField]
     private AudioClip doorOpenSound;
 
     [SerializeField]
     private AudioClip doorCloseSound;
+    #endregion
 
-
+    #region System Methods
     // Use this for initialization
     void Awake()
     {
@@ -39,7 +46,9 @@ public class DoorOpenColseSound : MonoBehaviour
             doorCloseSound = Resources.Load("GameSounds/DoorSounds/openDoor", typeof(AudioClip)) as AudioClip;
         }
     }
+    #endregion
 
+    #region Play Sounds
     private void PlayOpenDoorSound()
     {
         if (doorOpenSound != null)
@@ -64,4 +73,5 @@ public class DoorOpenColseSound : MonoBehaviour
         }
         sourceOfDoorSounds.Play();
     }
+    #endregion
 }

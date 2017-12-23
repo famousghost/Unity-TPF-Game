@@ -19,9 +19,11 @@ public class PlayerControler : MonoBehaviour
     [SerializeField]
     PlayerStates playerStates;
     #endregion
-
+    //If we want to make a gun
+    #region Guns
     [SerializeField]
     private GunPickUp gunPickUp;
+    #endregion
     //Player RigidBody use to gravity and walking
     #region Player
     [Header("Player")]
@@ -118,6 +120,7 @@ public class PlayerControler : MonoBehaviour
     [SerializeField]
     private float jumpGravity = 230.0f;
 
+    [SerializeField]
     private float rotationeY;
 
     [SerializeField]
@@ -166,6 +169,18 @@ public class PlayerControler : MonoBehaviour
          walkingY = Vector3.forward * walkSpeed * keyInput.GetWalkY() * Time.deltaTime;
          Walks = walkingX + walkingY;
          rigidBody.transform.Translate(Walks);
+    }
+    #endregion
+
+    #region PlayerClimb
+    public void PlayerClimb(bool lookUp)
+    {
+        Vector3 walkingUp;
+        if(lookUp)
+            walkingUp = Vector3.up * walkSpeed * keyInput.GetWalkY() * Time.deltaTime;
+        else
+            walkingUp = Vector3.up * walkSpeed * -keyInput.GetWalkY() * Time.deltaTime;
+        rigidBody.transform.Translate(walkingUp);
     }
     #endregion
 
@@ -477,8 +492,31 @@ public class PlayerControler : MonoBehaviour
     }
     #endregion
 
+    #region Setters
+
     public void SetGameObj(Rigidbody gameObj)
     {
         this.gameObj = gameObj;
     }
+    #endregion
+
+    #region Getters
+    public float GetRotationeY()
+    {
+        return rotationeY;
+    }
+    #endregion
+
+    #region Gravity Enable And Diable
+    public void GravityDisable()
+    {
+        rigidBody.useGravity = false;
+    }
+
+    public void GravityEnable()
+    {
+        rigidBody.useGravity = true;
+    }
+    #endregion
+
 }

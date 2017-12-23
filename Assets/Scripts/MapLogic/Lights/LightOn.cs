@@ -4,14 +4,19 @@ using UnityEngine;
 
 public class LightOn : MonoBehaviour {
 
+    #region Light
     [SerializeField]
     private Light corridorLight;
+    #endregion
 
+    #region EmergencyLights
     [SerializeField]
     private EmergencyLights emergencyLights;
+    #endregion
 
-	// Use this for initialization
-	void Start () {
+    #region System Methods
+    // Use this for initialization
+    void Start () {
         corridorLight = GetComponent<Light>();
         emergencyLights = GameObject.FindGameObjectWithTag("GeneratorPlace").GetComponent<EmergencyLights>();
 	}
@@ -24,4 +29,5 @@ public class LightOn : MonoBehaviour {
             corridorLight.enabled = true;
         }
 	}
+    #endregion
 }

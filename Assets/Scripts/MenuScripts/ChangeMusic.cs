@@ -4,18 +4,23 @@ using UnityEngine;
 
 public class ChangeMusic : MonoBehaviour {
 
+    #region AudioSource
     [SerializeField]
     private AudioSource backGroundMusic;
+    #endregion
 
+    #region Float
     [SerializeField]
     private float noramlPitch = 1.0f;
 
 
     [SerializeField]
     private float timerToJumpScare = 130.0f;
+    #endregion
 
-	// Use this for initialization
-	void Start () {
+    #region System Methods
+    // Use this for initialization
+    void Start () {
         backGroundMusic = GetComponent<AudioSource>();
     }
 	
@@ -23,7 +28,9 @@ public class ChangeMusic : MonoBehaviour {
 	void Update () {
         ChangePitch();
     }
+    #endregion
 
+    #region Change Pitch
     private void ChangePitch()
     {
         timerToJumpScare -= 0.05f;
@@ -36,4 +43,5 @@ public class ChangeMusic : MonoBehaviour {
             timerToJumpScare = Random.Range(50.0f, 200.0f);
         }
     }
+    #endregion
 }

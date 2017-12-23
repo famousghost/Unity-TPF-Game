@@ -5,23 +5,32 @@ using UnityEngine;
 
 public class MakeDamage : MonoBehaviour {
 
+
+    //In Progress...
+    #region Float
     [SerializeField]
     private float damage;
+    #endregion
 
+    #region TakeDamage Class
     [SerializeField]
     private TakeDamage takeDamage;
+    #endregion
 
-	// Use this for initialization
-	void Start () {
+    #region System Methods
+    // Use this for initialization
+    void Start () {
         damage = 2.0f;
         takeDamage = GameObject.Find("Player").GetComponent<TakeDamage>();
 	}
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update () {
         Atack();
     }
+    #endregion
 
+    #region Attack
     private void Atack()
     {
         if(Input.GetKeyDown(KeyCode.K))
@@ -29,4 +38,5 @@ public class MakeDamage : MonoBehaviour {
             takeDamage.SubstractHP(damage);
         }
     }
+    #endregion
 }
