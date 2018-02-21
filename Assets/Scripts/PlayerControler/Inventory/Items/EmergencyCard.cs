@@ -59,7 +59,8 @@ public class EmergencyCard : MonoBehaviour {
     #region NormalMode Active
     public void NormalModeActivate()
     {
-        switchAcitve.PlayPowerOnSound();
+        if(emergencyLights.GetLightState()==LightsState.Emergency)
+            switchAcitve.PlayPowerOnSound();
         emergencyLights.SetLightState(LightsState.Normal);
     }
     #endregion

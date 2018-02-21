@@ -41,7 +41,8 @@ public class ItemUse : MonoBehaviour, IPointerDownHandler
     //Start Method
     #region Unity System Methods
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         //Generator Logic
         emergencyCard = GameObject.Find("UsableItems").GetComponent<EmergencyCard>();
         generator = GameObject.Find("UsableItems").GetComponent<Generator>();
@@ -50,7 +51,7 @@ public class ItemUse : MonoBehaviour, IPointerDownHandler
         nameOfItem = "empty";
         item = GetComponent<Item>();
         itemsPickUp = GameObject.Find("Player").GetComponent<ItemsPickUp>();
-	}
+    }
     #endregion
 
     //Interaction with mouse
@@ -68,7 +69,7 @@ public class ItemUse : MonoBehaviour, IPointerDownHandler
                 item.RemoveItem();
                 itemsPickUp.SubtractCurrentNumberOfItem();
             }
-            if(emergencyCard.GetUseCard() && emergencyCard.CheckCardUse(nameOfItem))
+            if (emergencyCard.GetUseCard() && emergencyCard.CheckCardUse(nameOfItem))
             {
                 emergencyCard.UseCard();
                 item.RemoveItem();
@@ -89,7 +90,7 @@ public class ItemUse : MonoBehaviour, IPointerDownHandler
     #region GUI
     void OnGUI()
     {
-        if (timer>0.0f)
+        if (timer > 0.0f)
         {
             int stringWidth = 200;
             int stringHeight = 50;

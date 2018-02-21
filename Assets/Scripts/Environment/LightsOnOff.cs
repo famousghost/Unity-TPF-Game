@@ -48,7 +48,7 @@ public class LightsOnOff : MonoBehaviour {
     {
         if (timing >= 1.0f)
         {
-           // lightBroke.enabled = true;
+            lightBroke.enabled = true;
         }
     }
 
@@ -56,7 +56,7 @@ public class LightsOnOff : MonoBehaviour {
     {
         if (timing <= 0.0f)
         {
-           // lightBroke.enabled = false;
+            lightBroke.enabled = false;
             timing = Random.Range(3.0f, 12.0f);
         }
     }
