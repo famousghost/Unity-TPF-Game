@@ -34,9 +34,9 @@ public class ButtonClicked : MonoBehaviour {
     // Use this for initialization
     void Start () {
         thisButton = this.gameObject;
-        buttonClicked = thisButton.transform.FindChild("ButtonClicked");
-        buttonReleased = thisButton.transform.FindChild("ButtonReleased");
-        currentButtonState = thisButton.transform.FindChild("Button");
+        buttonClicked = thisButton.transform.Find("ButtonClicked");
+        buttonReleased = thisButton.transform.Find("ButtonReleased");
+        currentButtonState = thisButton.transform.Find("Button");
 
     }
 
@@ -50,9 +50,9 @@ public class ButtonClicked : MonoBehaviour {
     private void ChangeButtonState()
     {
         if(isClicked)
-            thisButton.transform.FindChild("Button").position = Vector3.MoveTowards(thisButton.transform.FindChild("Button").position, buttonClicked.position, speedOfClicked * Time.deltaTime);
+            thisButton.transform.Find("Button").position = Vector3.MoveTowards(thisButton.transform.Find("Button").position, buttonClicked.position, speedOfClicked * Time.deltaTime);
         else
-            thisButton.transform.FindChild("Button").position = Vector3.MoveTowards(thisButton.transform.FindChild("Button").position, buttonReleased.position, speedOfClicked * Time.deltaTime);
+            thisButton.transform.Find("Button").position = Vector3.MoveTowards(thisButton.transform.Find("Button").position, buttonReleased.position, speedOfClicked * Time.deltaTime);
         if(currentButtonState.position == buttonClicked.position)
         {
             isClicked = false;
