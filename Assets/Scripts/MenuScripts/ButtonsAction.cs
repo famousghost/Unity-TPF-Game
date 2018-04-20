@@ -79,6 +79,11 @@ public class ButtonsAction : MonoBehaviour{
     private float step = 2.0f;
     #endregion
 
+    #region OptionCanvas
+    [SerializeField]
+    private GameObject optionCanvas;
+    #endregion // dodane przez Kacpra, w SystemMethods ją wyłączam, w WhichbuttonwasClicked Aktywuję
+
     #region System Methods
     // Use this for initialization
     void Start()
@@ -92,6 +97,7 @@ public class ButtonsAction : MonoBehaviour{
         backgroundImage = GameObject.Find("Background").GetComponent<Image>();
         fillImage = GameObject.Find("Fill").GetComponent<Image>();
         loadingSlider.enabled = false;
+        optionCanvas.SetActive(false);
     }
 
     // Update is called once per frame
@@ -158,6 +164,17 @@ public class ButtonsAction : MonoBehaviour{
         if (buttonName == "Exit" && buttonIsClicked == false)
         {
             Application.Quit();
+        }
+        if (buttonName == "SettingsPosition" && buttonIsClicked == false)
+        {
+            buttonIsClicked = true;
+            optionCanvas.SetActive(true);
+        }
+        if (buttonName == "BackPosition" && buttonIsClicked == false)
+        {
+            buttonIsClicked = true;
+            optionCanvas.SetActive(false);
+            //pasuje zmienić buttonIsClicked w SettingsPosition na false
         }
 
     }
