@@ -7,18 +7,45 @@ public class TutorialDisplay : MonoBehaviour {
     [SerializeField]
     private string tutorialText;
 
-    private void OnGUI()
+    [SerializeField]
+    private bool isEntered = false;
+
+    [SerializeField]
+    private float timer = 0.4f;
+
+    public void SetTimer(float timer)
     {
-        //tutorialText = GUI.TextField(new Rect(50, 50, 500, 500), stringToEdit, 25);
+        this.timer = timer;
     }
 
-    // Use this for initialization
-    void Start () {
-        OnGUI();
-	}
+    private void OnGUI()
+    {
+        if (timer > 0.0f)
+        {
+            GUI.skin.label.fontSize = 25;
+            GUI.Label(new Rect(275, 150, 300, 300), tutorialText);
+        }
+    }
+
+    public void SetTutorialText(string tutorialText)
+    {
+        this.tutorialText = tutorialText;
+    }
 	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    public void EnteredTrigger(bool isEntered)
+    {
+        this.isEntered = isEntered;
+    }
+
+    private void Update()
+    {
+        if(isEntered)
+        {
+            timer -= (0.1f * Time.deltaTime);
+        }
+        if(timer<=0.0f)
+        {
+            isEntered = false;
+        }
+    }
 }
