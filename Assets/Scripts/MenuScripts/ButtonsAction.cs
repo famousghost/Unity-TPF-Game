@@ -123,6 +123,7 @@ public class ButtonsAction : MonoBehaviour{
 
     void OnMouseDown()
     {
+        buttonIsClicked = false;
         buttonName = this.gameObject.name;
         Debug.Log(buttonName);
     }

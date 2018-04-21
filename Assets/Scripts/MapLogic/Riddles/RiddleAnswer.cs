@@ -34,7 +34,7 @@ public class RiddleAnswer : MonoBehaviour {
     {
         colorOfText.normal.textColor = Color.black;
         colorOfText.fontSize = 20;
-        answerToRiddle = new char[4];
+        answerToRiddle = new char[5];
         numbers = GameObject.Find("Code").GetComponent<Text>();
         emergencyCard = GameObject.Find("UsableItems").GetComponent<EmergencyCard>();
     }
@@ -47,27 +47,33 @@ public class RiddleAnswer : MonoBehaviour {
     public void RiddleEnable()
     {
         canOpenRiddle = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
     public void RiddleDisable()
     {
         canOpenRiddle = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     public bool SetAnswer()
     {
-        if (answerToRiddle[0] == '1' && answerToRiddle[1] == '2' && answerToRiddle[2] == '6' && answerToRiddle[3] == '3' )
+        if (answerToRiddle[0] == '1' && answerToRiddle[1] == '2' && answerToRiddle[2] == '6' && answerToRiddle[3] == '3' && answerToRiddle[4] == '0')
         {
-            canOpenRiddle = false;
-            emergencyCard.SetCorrectCode(true);
-            return true;
+             canOpenRiddle = false;
+             emergencyCard.SetCorrectCode(true);
+             return true;
         }
         else
         {
-            if (counter > 3)
+            if (counter > 4)
             {
-                
                 counter = 0;
+                numbers.text = "";
+                for(int i=0;i<5;i++)
+                {
+                    answerToRiddle[i] = 'x';
+                }
                 return false;
             }
         }
@@ -76,13 +82,31 @@ public class RiddleAnswer : MonoBehaviour {
 
     public void AddToAnswer(char answerToRiddle)
     {
-        if(counter == 0)
+        if (counter < 4)
         {
-            numbers.text = "";
+            this.answerToRiddle[counter] = answerToRiddle;
+            if (counter == 0)
+            {
+                numbers.text = "";
+            }
+            if (answerToRiddle == '0')
+            {
+                numbers.text = "";
+                counter = 0;
+            }
+            if (answerToRiddle != '0')
+                numbers.text += answerToRiddle;
+            Debug.Log(answerToRiddle);
+            Debug.Log(counter);
         }
-        this.answerToRiddle[counter] = answerToRiddle;
-        numbers.text += answerToRiddle;
-        Debug.Log(answerToRiddle);
+        else
+        {
+            if (answerToRiddle == '0')
+            {
+                this.answerToRiddle[4] = answerToRiddle;
+                counter++;
+            }
+        }
     }
 
     public void SetCorrectAnswer()
@@ -110,8 +134,13 @@ public class RiddleAnswer : MonoBehaviour {
         }
         else if(canOpenRiddle && emergencyCard.GetCanAnswerToRiddle() && !canvas.isActiveAndEnabled)
         {
-            GUI.Label(new Rect(Screen.width / 2 - (stringWidth / 2), Screen.height / 2, stringWidth, stringHeight), "Press Left Mouse button", colorOfText);
+            GUI.Label(new Rect(Screen.width / 2 - (stringWidth / 4), Screen.height / 2, stringWidth, stringHeight), "LMB", colorOfText);
         }
 
+    }
+
+    public int GetCounter()
+    {
+        return counter;
     }
 }
