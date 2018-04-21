@@ -18,7 +18,8 @@ public class Riddle : MonoBehaviour, IPointerDownHandler
     public void OnPointerDown(PointerEventData eventData)
     {
         riddleAnswer.AddToAnswer(this.gameObject.name[0]);
-        riddleAnswer.AddCounter(1);
+        if(this.gameObject.name[0] != '0' && riddleAnswer.GetCounter() < 4)
+            riddleAnswer.AddCounter(1);
         if(riddleAnswer.SetAnswer())
         {
             riddleAnswer.SetCorrectAnswer();
