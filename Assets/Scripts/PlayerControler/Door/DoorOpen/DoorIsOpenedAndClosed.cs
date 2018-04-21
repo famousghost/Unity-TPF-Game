@@ -28,6 +28,9 @@ public class DoorIsOpenedAndClosed : MonoBehaviour {
 
     [SerializeField]
     private float openingSpeed = 2.0f;
+
+    [SerializeField]
+    private bool doorShutdown = false;
     #endregion
 
     #region Unity System Methods
@@ -80,7 +83,19 @@ public class DoorIsOpenedAndClosed : MonoBehaviour {
     #region Setter
     public void SetDoorIsOpened()
     {
+        if(!doorShutdown)
         this.doorIsOpened = !this.doorIsOpened;
+    }
+
+    public void SetDoorClosed()
+    {
+        this.doorIsOpened = false;
+        doorShutdown = true;
+    }
+
+    public void SetDoorShutdownFalse()
+    {
+        doorShutdown = false;
     }
     #endregion
 

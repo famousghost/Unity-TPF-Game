@@ -4,6 +4,16 @@ using UnityEngine;
 
 public class EmergencyCard : MonoBehaviour {
 
+    #region Monitor Warnings
+    [SerializeField]
+    private GameObject[] warning;
+    #endregion
+
+    #region Shuttling Door
+    [SerializeField]
+    private GameObject door;
+    #endregion
+
     #region SwitchActive Class
     [SerializeField]
     private SwitchActive switchAcitve;
@@ -14,7 +24,7 @@ public class EmergencyCard : MonoBehaviour {
     private Canvas canvas;
     #endregion
 
-    #region Bool
+    #region Bools
     [SerializeField]
     private bool canUseCard = false;
 
@@ -23,6 +33,9 @@ public class EmergencyCard : MonoBehaviour {
 
     [SerializeField]
     private bool canAnswerToRiddle = false;
+
+    [SerializeField]
+    private bool canDie = false;
     #endregion
 
     #region Emergency Lights Class
@@ -53,6 +66,12 @@ public class EmergencyCard : MonoBehaviour {
     public void UseCard()
     {
         canAnswerToRiddle = true;
+        warning[0].SetActive(false);
+        warning[1].SetActive(true);
+        warning[2].SetActive(true);
+        warning[3].SetActive(true);
+        door.GetComponent<DoorIsOpenedAndClosed>().SetDoorClosed();
+        canDie = true;
     }
     #endregion
 
@@ -62,6 +81,11 @@ public class EmergencyCard : MonoBehaviour {
         if(emergencyLights.GetLightState()==LightsState.Emergency)
             switchAcitve.PlayPowerOnSound();
         emergencyLights.SetLightState(LightsState.Normal);
+        warning[1].SetActive(false);
+        warning[2].SetActive(false);
+        warning[3].SetActive(false);
+        door.GetComponent<DoorIsOpenedAndClosed>().SetDoorShutdownFalse();
+        canDie = false;
     }
     #endregion
 
@@ -110,6 +134,11 @@ public class EmergencyCard : MonoBehaviour {
     public bool GetCanAnswerToRiddle()
     {
         return canAnswerToRiddle;
+    }
+
+    public bool GetCanDie()
+    {
+        return canDie;
     }
     #endregion
 }
