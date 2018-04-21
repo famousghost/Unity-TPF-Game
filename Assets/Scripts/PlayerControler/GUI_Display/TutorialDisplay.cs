@@ -7,6 +7,7 @@ public class TutorialDisplay : MonoBehaviour {
     [SerializeField]
     private string tutorialText;
 
+<<<<<<< HEAD
     [SerializeField]
     private bool isEntered = false;
 
@@ -48,4 +49,20 @@ public class TutorialDisplay : MonoBehaviour {
             isEntered = false;
         }
     }
+=======
+    private void OnGUI()
+    {
+        //tutorialText = GUI.TextField(new Rect(50, 50, 500, 500), stringToEdit, 25);
+    }
+
+    // Use this for initialization
+    void Start () {
+
+	}
+	
+	// Update is called once per frame
+	void Update () {
+		
+	}
+>>>>>>> dd15de67da3581d7b2366198ae7faee105c944b1
 }

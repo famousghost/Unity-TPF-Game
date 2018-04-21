@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class EmergencyCard : MonoBehaviour {
 
+<<<<<<< HEAD
     #region Monitor Warnings
     [SerializeField]
     private GameObject[] warning;
@@ -14,6 +15,8 @@ public class EmergencyCard : MonoBehaviour {
     private GameObject door;
     #endregion
 
+=======
+>>>>>>> dd15de67da3581d7b2366198ae7faee105c944b1
     #region SwitchActive Class
     [SerializeField]
     private SwitchActive switchAcitve;
@@ -24,7 +27,11 @@ public class EmergencyCard : MonoBehaviour {
     private Canvas canvas;
     #endregion
 
+<<<<<<< HEAD
     #region Bools
+=======
+    #region Bool
+>>>>>>> dd15de67da3581d7b2366198ae7faee105c944b1
     [SerializeField]
     private bool canUseCard = false;
 
@@ -33,9 +40,12 @@ public class EmergencyCard : MonoBehaviour {
 
     [SerializeField]
     private bool canAnswerToRiddle = false;
+<<<<<<< HEAD
 
     [SerializeField]
     private bool canDie = false;
+=======
+>>>>>>> dd15de67da3581d7b2366198ae7faee105c944b1
     #endregion
 
     #region Emergency Lights Class
@@ -66,12 +76,15 @@ public class EmergencyCard : MonoBehaviour {
     public void UseCard()
     {
         canAnswerToRiddle = true;
+<<<<<<< HEAD
         warning[0].SetActive(false);
         warning[1].SetActive(true);
         warning[2].SetActive(true);
         warning[3].SetActive(true);
         door.GetComponent<DoorIsOpenedAndClosed>().SetDoorClosed();
         canDie = true;
+=======
+>>>>>>> dd15de67da3581d7b2366198ae7faee105c944b1
     }
     #endregion
 
@@ -81,11 +94,14 @@ public class EmergencyCard : MonoBehaviour {
         if(emergencyLights.GetLightState()==LightsState.Emergency)
             switchAcitve.PlayPowerOnSound();
         emergencyLights.SetLightState(LightsState.Normal);
+<<<<<<< HEAD
         warning[1].SetActive(false);
         warning[2].SetActive(false);
         warning[3].SetActive(false);
         door.GetComponent<DoorIsOpenedAndClosed>().SetDoorShutdownFalse();
         canDie = false;
+=======
+>>>>>>> dd15de67da3581d7b2366198ae7faee105c944b1
     }
     #endregion
 
@@ -135,10 +151,13 @@ public class EmergencyCard : MonoBehaviour {
     {
         return canAnswerToRiddle;
     }
+<<<<<<< HEAD
 
     public bool GetCanDie()
     {
         return canDie;
     }
+=======
+>>>>>>> dd15de67da3581d7b2366198ae7faee105c944b1
     #endregion
 }
