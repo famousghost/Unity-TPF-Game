@@ -19,6 +19,8 @@ public class MenuDisplay : MonoBehaviour {
     [SerializeField]
     private ItemsPickUp itemsPickUp;
 
+    [SerializeField]
+    private DisplayNote displayNote;
     #endregion
 
     #region Active Bool
@@ -28,6 +30,7 @@ public class MenuDisplay : MonoBehaviour {
     #region Start (Canvas Off)
     // Use this for initialization
     void Start () {
+        displayNote = GetComponent<DisplayNote>();
         MenuCanvas.SetActive(false);
     }
     #endregion
@@ -35,36 +38,42 @@ public class MenuDisplay : MonoBehaviour {
     #region Update
     // Update is called once per frame
     void Update () {
-		if(Input.GetKeyDown(KeyCode.Escape) && Active == false)
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            menuDislpayerFalse();
-        }
-        else if(Input.GetKeyDown(KeyCode.Escape) && Active == true)
-        {
-            menuDislpayerTrue();
+            if (Active == false)
+            {
+                menuDislpayerTrue();
+            }
+            else
+            {
+                menuDislpayerFalse();
+            }
         }
 	}
     #endregion
 
     #region Option Activating Function
-    void menuDislpayerFalse()
+    void menuDislpayerTrue()
     {
         Active = true;
         MenuCanvas.SetActive(true);
+        displayNote.SetNoteActive(false);
         playerControler.enabled = false;
         itemsPickUp.enabled = false;
         itemDisplay.enabled = false;
+        displayNote.enabled = false;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
     }
 
-    void menuDislpayerTrue()
+    void menuDislpayerFalse()
     {
         Active = false;
         MenuCanvas.SetActive(false);
         playerControler.enabled = true;
         itemsPickUp.enabled = true;
         itemDisplay.enabled = true;
+        displayNote.enabled = true;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }

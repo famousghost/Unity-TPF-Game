@@ -14,7 +14,7 @@ public class TutorialDisplay : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        OnGUI();
+
 	}
 	
 	// Update is called once per frame
