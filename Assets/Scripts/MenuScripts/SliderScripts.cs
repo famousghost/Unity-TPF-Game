@@ -24,10 +24,6 @@ public class SliderScripts : MonoBehaviour {
     public AudioMixer mainMixer;
     #endregion
 
-    #region Light
-    public Light mainLight;
-    #endregion
-
     #region Volume Slider Function
     public void setVolume (float volume)
     {
@@ -39,7 +35,7 @@ public class SliderScripts : MonoBehaviour {
     #region Brightness Slider Function
     public void setBrightness(float brightness)
     {
-        mainLight.intensity = brightness + (float)0.5;
+        RenderSettings.ambientIntensity = brightness;
         PlayerPrefs.SetFloat("playerBrightness", brightness);
     }
     #endregion
@@ -47,10 +43,15 @@ public class SliderScripts : MonoBehaviour {
     #region On Startup
     private void Start()
     {
-        playerVolume = PlayerPrefs.GetFloat("playerVolume");
-        playerBrightness = PlayerPrefs.GetFloat("playerBrightness");
         brightnessSlider.value = playerBrightness;
         volumeSlider.value = playerVolume;
+    }
+
+    private void Awake()
+    {
+        playerVolume = PlayerPrefs.GetFloat("playerVolume");
+        playerBrightness = PlayerPrefs.GetFloat("playerBrightness");
+        RenderSettings.ambientIntensity = playerBrightness;
     }
     #endregion
 }

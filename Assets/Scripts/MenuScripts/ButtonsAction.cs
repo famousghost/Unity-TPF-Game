@@ -126,6 +126,7 @@ public class ButtonsAction : MonoBehaviour{
         buttonIsClicked = false;
         buttonName = this.gameObject.name;
         Debug.Log(buttonName);
+        buttonIsClicked = false;
     }
     #endregion
 
@@ -162,8 +163,9 @@ public class ButtonsAction : MonoBehaviour{
             startClicked = true;
             buttonIsClicked = true;
         }
-        if (buttonName == "Exit" && buttonIsClicked == false)
+        if (buttonName == "ExitPosition" && buttonIsClicked == false)
         {
+            buttonIsClicked = true;
             Application.Quit();
         }
         if (buttonName == "SettingsPosition" && buttonIsClicked == false)
@@ -175,9 +177,7 @@ public class ButtonsAction : MonoBehaviour{
         {
             buttonIsClicked = true;
             optionCanvas.SetActive(false);
-            //pasuje zmienić buttonIsClicked w SettingsPosition na false
         }
-
     }
     #endregion
 
